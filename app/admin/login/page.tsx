@@ -22,7 +22,7 @@ export default function ResearcherLoginPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "로그인 실패"); return; }
-      router.push(data.redirectTo);
+      window.location.href = data.redirectTo;
     } catch {
       setError("서버에 연결할 수 없습니다.");
     } finally {

@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function ParticipantLoginPage() {
-  const router = useRouter();
   const [participantId, setParticipantId] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +19,7 @@ export default function ParticipantLoginPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "오류가 발생했습니다."); return; }
-      router.push(data.redirectTo);
+      window.location.href = data.redirectTo;
     } catch {
       setError("서버에 연결할 수 없습니다.");
     } finally {
