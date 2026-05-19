@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
-import { signToken, setParticipantCookie } from "@/lib/auth";
+import { signToken } from "@/lib/auth";
 import { getSession, createSession } from "@/lib/db";
 import { sessionSchema, type Session } from "@/lib/schemas";
+
+const PARTICIPANT_COOKIE = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  path: "/",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 60 * 60 * 24 * 7
+};
 
 function assignGroup(participantId: string): Pick<Session, "groupNum" | "paperSet"> {
   const num = parseInt(participantId, 10);
@@ -31,7 +39,7 @@ export async function POST(request: Request) {
   }
 
   const token = await signToken({ role: "participant", participantId });
-  await setParticipantCookie(token);
-
-  return NextResponse.json({ redirectTo: `/experiment/${session.currentStep}` });
+  const res = NextResponse.json({ redirectTo: `/experiment/${session.currentStep}` });
+  res.cookies.set("participant_token", token, PARTICIPANT_COOKIE);
+  return res;
 }

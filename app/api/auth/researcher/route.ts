@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
-import { signToken, setResearcherCookie } from "@/lib/auth";
+import { signToken } from "@/lib/auth";
+
+const RESEARCHER_COOKIE = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  path: "/",
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 60 * 60 * 8
+};
 
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a), bb = Buffer.from(b);
@@ -24,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   const token = await signToken({ role: "researcher", username });
-  await setResearcherCookie(token);
-
-  return NextResponse.json({ redirectTo: "/admin" });
+  const res = NextResponse.json({ redirectTo: "/admin" });
+  res.cookies.set("researcher_token", token, RESEARCHER_COOKIE);
+  return res;
 }

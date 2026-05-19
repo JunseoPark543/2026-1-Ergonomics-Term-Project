@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { clearAuthCookies } from "@/lib/auth";
 
 export async function POST() {
-  await clearAuthCookies();
-  return NextResponse.json({ redirectTo: "/" });
+  const res = NextResponse.json({ redirectTo: "/" });
+  res.cookies.delete("participant_token");
+  res.cookies.delete("researcher_token");
+  return res;
 }
