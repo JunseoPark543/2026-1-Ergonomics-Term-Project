@@ -1,59 +1,33 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifyToken } from "@/lib/auth";
 
-const RESEARCHER_PATHS = ["/admin", "/api/export", "/api/session-list", "/api/admin"];
-const PARTICIPANT_PATHS = ["/experiment", "/api/responses", "/api/session", "/api/sentence-set", "/api/me"];
-
-export async function middleware(request: NextRequest) {
+// Edge Runtime에서 JWT 검증 없이 쿠키 존재 여부만 확인한다.
+// 실제 JWT 검증은 각 API Route Handler(Node.js Runtime)가 담당한다.
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 공개 경로
-  if (pathname.startsWith("/api/auth") || pathname === "/" || pathname === "/admin/login") {
+  // 공개 경로는 통과
+  if (pathname === "/" || pathname === "/admin/login") return NextResponse.next();
+
+  // 실험 페이지: 쿠키 없으면 로그인 페이지로
+  if (pathname.startsWith("/experiment")) {
+    const hasToken =
+      request.cookies.has("participant_token") || request.cookies.has("researcher_token");
+    if (!hasToken) return NextResponse.redirect(new URL("/", request.url));
     return NextResponse.next();
   }
 
-  const researcherToken = request.cookies.get("researcher_token")?.value ?? "";
-  const participantToken = request.cookies.get("participant_token")?.value ?? "";
-
-  const researcherPayload = researcherToken ? await verifyToken(researcherToken) : null;
-  const isResearcher = researcherPayload?.role === "researcher";
-
-  // 연구자 전용 경로
-  if (RESEARCHER_PATHS.some((p) => pathname.startsWith(p))) {
-    if (!isResearcher) {
-      if (pathname.startsWith("/api/")) {
-        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-      }
+  // 관리자 페이지: 연구자 쿠키 없으면 로그인 페이지로
+  if (pathname.startsWith("/admin")) {
+    if (!request.cookies.has("researcher_token")) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
-    return addAuthHeaders(request, "researcher", (researcherPayload as { username: string }).username);
-  }
-
-  // 참가자 경로 (연구자도 접근 가능)
-  if (PARTICIPANT_PATHS.some((p) => pathname.startsWith(p))) {
-    if (isResearcher) return NextResponse.next();
-
-    const participantPayload = participantToken ? await verifyToken(participantToken) : null;
-    if (!participantPayload || participantPayload.role !== "participant") {
-      if (pathname.startsWith("/api/")) {
-        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return addAuthHeaders(request, "participant", participantPayload.participantId);
+    return NextResponse.next();
   }
 
   return NextResponse.next();
 }
 
-function addAuthHeaders(request: NextRequest, role: string, id: string) {
-  const headers = new Headers(request.headers);
-  headers.set("x-auth-role", role);
-  headers.set("x-auth-id", id);
-  return NextResponse.next({ request: { headers } });
-}
-
 export const config = {
-  matcher: ["/experiment/:path*", "/admin/:path*", "/api/:path*"]
+  matcher: ["/experiment/:path*", "/admin/:path*"]
 };

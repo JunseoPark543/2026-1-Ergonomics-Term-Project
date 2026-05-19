@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { saveFilteringResponse, saveSurveyResponse, getFilteringResponses } from "@/lib/db";
 import { filteringResponseSchema, surveyResponseSchema } from "@/lib/schemas";
 import { scoreResponse } from "@/lib/scoring";
 import { getSentenceSet } from "@/lib/sentence-sets";
-import type { NextRequest } from "next/server";
+import { getAuthContext } from "@/lib/api-auth";
 import type { Phase, UserResponse } from "@/lib/schemas";
 
 export async function POST(request: NextRequest) {
-  const authId = request.headers.get("x-auth-id");
-  if (!authId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const { participantId, isResearcher } = await getAuthContext(request);
+  if (!participantId && !isResearcher) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
 
   const body = await request.json().catch(() => null);
   if (!body) return NextResponse.json({ error: "invalid body" }, { status: 400 });
 
+  const authId = participantId ?? "";
   const { type } = body as { type?: string };
 
   if (type === "filtering") {
@@ -73,14 +77,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const role = request.headers.get("x-auth-role");
-  const authId = request.headers.get("x-auth-id");
-  if (!authId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const { participantId, isResearcher } = await getAuthContext(request);
+  if (!participantId && !isResearcher) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
 
-  // 참가자는 자신의 응답만 조회 가능
-  const participantId = role === "researcher"
-    ? (new URL(request.url).searchParams.get("participantId") ?? undefined)
-    : authId;
+  const queryId = new URL(request.url).searchParams.get("participantId") ?? undefined;
+  const targetId = isResearcher ? queryId : (participantId ?? undefined);
 
-  return NextResponse.json(await getFilteringResponses(participantId));
+  return NextResponse.json(await getFilteringResponses(targetId));
 }
