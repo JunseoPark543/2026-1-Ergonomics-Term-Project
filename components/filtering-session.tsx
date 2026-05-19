@@ -151,7 +151,7 @@ export default function FilteringSession({ participantId, paperSet, phase, title
               <BookOpen size={14} /> 원문 근거
             </div>
             <blockquote className="rounded-md border-l-4 border-signal bg-blue-50 px-4 py-3 text-sm leading-6 text-ink">
-              "{currentSentence.evidenceQuote}"
+              &ldquo;{currentSentence.evidenceQuote}&rdquo;
             </blockquote>
             <p className="mt-2 text-right text-xs text-stone-400">p. {currentSentence.evidencePage}</p>
           </section>
