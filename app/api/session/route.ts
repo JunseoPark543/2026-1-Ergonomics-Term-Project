@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest) {
   if (!body?.step) return NextResponse.json({ error: "step required" }, { status: 400 });
 
   const stepOrder: Session["currentStep"][] = [
-    "pre-test", "filtering", "post-test", "survey", "done"
+    "reading", "pre-test", "filtering", "post-test", "survey", "done"
   ];
   if (!stepOrder.includes(body.step)) {
     return NextResponse.json({ error: "invalid step" }, { status: 400 });
