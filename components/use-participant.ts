@@ -8,7 +8,7 @@ type Me = {
   role: "participant";
   participantId: string;
   currentStep: Session["currentStep"];
-  paperSet: "vision" | "timeseries";
+  paperSet: "vision" | "timeseries" | "optical";
   groupNum: 1 | 2;
 };
 

@@ -7,7 +7,7 @@ function assignGroup(participantId: string): Pick<Session, "groupNum" | "paperSe
   const num = parseInt(participantId, 10);
   return {
     groupNum: (num % 2 === 1 ? 1 : 2) as 1 | 2,
-    paperSet: num <= 3 ? "vision" : "timeseries"
+    paperSet: num <= 2 ? "vision" : num <= 4 ? "timeseries" : "optical"
   };
 }
 

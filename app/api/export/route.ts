@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     const rows = data.map((s) => [
       s.participantId,
       `집단${s.groupNum}`,
-      s.paperSet === "vision" ? "비전(I-JEPA+MAE)" : "시계열(TimesFM+Chronos)",
+      s.paperSet === "vision" ? "비전(I-JEPA+MAE)" : s.paperSet === "timeseries" ? "시계열(TimesFM+Chronos)" : "광통신(FSO+FSO-Perf)",
       s.currentStep, s.createdAt
     ]);
     return csv(toCsv([headers, ...rows]), "sessions.csv");

@@ -4,7 +4,7 @@ import { z } from "zod";
 export const sessionSchema = z.object({
   participantId: z.string(),           // "01" ~ "06"
   groupNum: z.union([z.literal(1), z.literal(2)]),  // 1=홀수(구조도↑), 2=짝수(요약문↑)
-  paperSet: z.union([z.literal("vision"), z.literal("timeseries")]),
+  paperSet: z.union([z.literal("vision"), z.literal("timeseries"), z.literal("optical")]),
   currentStep: z.enum(["pre-test", "filtering", "post-test", "survey", "done"]),
   createdAt: z.string()
 });
@@ -33,7 +33,7 @@ export type Phase = z.infer<typeof phaseSchema>;
 
 export const sentenceSetSchema = z.object({
   phase: phaseSchema,
-  paperSet: z.union([z.literal("vision"), z.literal("timeseries")]),
+  paperSet: z.union([z.literal("vision"), z.literal("timeseries"), z.literal("optical")]),
   paper: z.string(),   // "I-JEPA" | "MAE" | "TimesFM" | "Chronos"
   sentences: z.array(sentenceSchema)
 });

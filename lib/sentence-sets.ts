@@ -565,6 +565,290 @@ const chronosPost: SentenceSet = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// FSO Link Budget  (광통신 그룹 사전 테스트 + 개입)
+// ─────────────────────────────────────────────────────────────
+const fsoPre: SentenceSet = {
+  phase: "pre",
+  paperSet: "optical",
+  paper: "FSO Link Budget",
+  sentences: [
+    {
+      id: "fso-pre-1",
+      statement:
+        "FSO 링크 버짓은 송신 광학 이득, 자유 공간 기하학적 손실, 대기 감쇠, 지향 오차 손실, 수신 광학 이득을 모두 포함하여 수신 전력을 계산한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "The link budget accounts for transmitted power, transmit optics gain, free-space geometric loss, atmospheric attenuation, pointing error loss, and receive aperture gain.",
+      evidencePage: 2
+    },
+    {
+      id: "fso-pre-2",
+      statement:
+        "1550 nm 파장은 대기 흡수가 상대적으로 낮고 성숙한 광통신 부품이 풍부하며 눈 안전 규정을 만족하여 FSO 위성 통신에서 널리 사용된다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "1550 nm is a preferred wavelength for FSO due to low atmospheric absorption, availability of mature telecom components, and compliance with eye safety standards.",
+      evidencePage: 2
+    },
+    {
+      id: "fso-pre-3",
+      statement:
+        "FSO 시스템에서 빔 발산각을 크게 하면 수신기에서 더 넓은 면적에 걸쳐 에너지가 집중되어 수신 신호 전력이 향상된다.",
+      isNoise: true,
+      errorType: "direction",
+      evidenceQuote:
+        "Increasing beam divergence spreads the transmitted energy over a larger area, reducing the power density at the receiver and thus decreasing received signal power.",
+      evidencePage: 3,
+      correctedStatement:
+        "FSO 시스템에서 빔 발산각을 크게 하면 에너지가 넓은 면적에 분산되어 수신기에서의 신호 전력 밀도가 감소한다.",
+      explanation:
+        "빔 발산각이 클수록 에너지가 더 넓은 면적으로 퍼지므로 수신기에서 포착하는 전력이 줄어든다. 방향성이 반전된 오류다."
+    },
+    {
+      id: "fso-pre-4",
+      statement:
+        "FSO 위성 링크의 기하학적 손실은 전송 거리, 빔 발산각, 수신 구경 크기에 의해 결정된다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Geometric loss depends on the transmission distance, beam divergence angle, and receiver aperture diameter.",
+      evidencePage: 3
+    },
+    {
+      id: "fso-pre-5",
+      statement:
+        "FSO 위성 링크는 맑은 날씨 조건에서 대기 손실이 완전히 제거되므로 링크 마진을 따로 설정할 필요가 없다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote:
+        "Even under clear sky, residual molecular absorption and Rayleigh scattering contribute atmospheric loss; link margin must account for these and for unexpected weather variations.",
+      evidencePage: 4,
+      correctedStatement:
+        "맑은 날씨에서도 분자 흡수와 레일리 산란 등의 잔류 대기 손실이 존재하며, 링크 마진은 이를 포함한 다양한 운용 변동성을 고려해야 한다.",
+      explanation:
+        "맑은 날씨가 대기 손실을 최소화하지만 완전히 제거하지는 않는다. 또한 갑작스러운 기상 변화를 대비한 마진이 항상 필요하다."
+    },
+    {
+      id: "fso-pre-6",
+      statement:
+        "FSO 위성 링크의 지향 오차 손실은 위성 자세 불확실성, 기계적 진동, 송수신기 간 각도 추적 오류에 의해 발생한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Pointing loss arises from satellite attitude uncertainty, structural vibrations, and angular tracking errors between the transmitter and receiver.",
+      evidencePage: 3
+    },
+    {
+      id: "fso-pre-7",
+      statement:
+        "대형 수신 구경을 사용하면 대기 난류 효과가 직접적으로 억제되며, 이것이 지상국에서 대형 망원경을 사용하는 유일한 이유임이 증명되었다.",
+      isNoise: true,
+      errorType: "causality",
+      evidenceQuote:
+        "Larger receive apertures collect more optical power and provide aperture averaging to partially mitigate turbulence-induced intensity fluctuations, but they also improve SNR through increased collection area.",
+      evidencePage: 4,
+      correctedStatement:
+        "대형 수신 구경은 더 많은 광 전력을 수집하고 구경 평균화를 통해 난류 유발 강도 변동을 부분적으로 완화하며, 이는 SNR 향상의 여러 이유 중 하나다.",
+      explanation:
+        "대형 구경은 전력 수집 증가와 구경 평균화 두 가지 이점을 제공한다. '직접적으로 억제'하고 '유일한 이유'라는 표현은 인과관계를 과장한 오류다."
+    },
+    {
+      id: "fso-pre-8",
+      statement:
+        "링크 마진은 수신기 최소 감도 임계값 대비 초과 수신 전력으로 정의되며, 환경 및 시스템 변동성을 흡수하는 설계 여유를 나타낸다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Link margin represents the excess received power above the minimum detector sensitivity threshold, providing design margin to absorb environmental and system variations.",
+      evidencePage: 4
+    }
+  ]
+};
+
+const fsoFiltering: SentenceSet = {
+  phase: "filtering",
+  paperSet: "optical",
+  paper: "FSO Link Budget",
+  sentences: [
+    {
+      id: "fso-fil-1",
+      statement:
+        "FSO 시스템의 대기 감쇠는 분자 흡수, 에어로졸 산란, 안개와 강우 같은 기상 현상을 포함하는 복합적인 요인으로 구성된다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Atmospheric attenuation in FSO systems includes contributions from molecular absorption, aerosol scattering, and weather-dependent phenomena such as fog and rain.",
+      evidencePage: 3
+    },
+    {
+      id: "fso-fil-2",
+      statement:
+        "이 논문에서 제시한 링크 버짓 분석은 동적 기상 전이를 포함한 모든 대기 현상을 완전히 반영하여 모든 운용 조건에서 완벽한 시스템 설계를 가능하게 한다.",
+      isNoise: true,
+      errorType: "limitation",
+      evidenceQuote:
+        "The link budget framework is based on representative atmospheric conditions; modeling of time-varying weather transitions involves simplifications and acknowledged limitations.",
+      evidencePage: 5,
+      correctedStatement:
+        "제시된 링크 버짓 분석은 대표적인 대기 조건을 기반으로 하며, 동적 기상 전이 모델링에는 단순화와 한계가 수반된다고 논문에서 명시한다.",
+      explanation:
+        "논문은 시간 변화 대기 조건 모델링의 한계를 명시적으로 인정한다. '완전히 반영'하고 '완벽한 설계를 가능하게 한다'는 한계점을 삭제한 오류다."
+    },
+    {
+      id: "fso-fil-3",
+      statement:
+        "LEO 위성 FSO 하향 링크에서 기하학적 경로 손실은 위성 궤도 고도와 작은 수신 구경으로 인해 수십 데시벨 수준에 이른다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "For LEO satellite FSO downlinks, geometric path loss is typically on the order of tens of decibels due to orbital altitude and small receiver aperture.",
+      evidencePage: 3
+    },
+    {
+      id: "fso-fil-4",
+      statement:
+        "FSO 링크의 수신 전력은 송신 전력에 송신 광학계, 자유 공간 전파, 대기 효과, 수신 광학계의 이득과 손실을 모두 곱하여 계산한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Received power is calculated by multiplying transmitted power by the gains and losses of transmit optics, free-space propagation, atmospheric effects, and receive optics.",
+      evidencePage: 2
+    },
+    {
+      id: "fso-fil-5",
+      statement:
+        "이 논문의 링크 버짓 분석은 FSO 위성 통신 시스템이 모든 대기 및 운용 조건에서 RF 시스템보다 항상 우수한 데이터 전송률과 신뢰성을 달성함을 증명한다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote:
+        "FSO offers higher bandwidth potential under favorable conditions but is susceptible to severe weather; direct comparison with RF depends on the specific scenario and is not the focus of this analysis.",
+      evidencePage: 1,
+      correctedStatement:
+        "FSO는 유리한 대기 조건에서 높은 대역폭 잠재력을 제공하지만 악천후에 취약하며, RF와의 성능 비교는 특정 시나리오에 따라 달라진다.",
+      explanation:
+        "논문은 RF 대비 FSO의 절대적 우위를 주장하지 않는다. 안개·강우 등 악천후에서 FSO 성능이 크게 저하된다는 점을 무시한 범위 과장 오류다."
+    },
+    {
+      id: "fso-fil-6",
+      statement:
+        "FSO 시스템의 파장 선택은 대기 투과 창, 부품 가용성, 눈 안전 규정, 검출기 감도 사이의 상충 관계를 포함한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Wavelength selection involves trade-offs between atmospheric transmission windows, component availability, eye safety regulations, and detector sensitivity.",
+      evidencePage: 2
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
+// FSO Performance Analysis  (광통신 그룹 사후 테스트)
+// 짝 논문: FSO Satellite Networks Performance Analysis
+//         (Transmission Power, Latency, Outage Probability)
+// ─────────────────────────────────────────────────────────────
+const fsoPerfPost: SentenceSet = {
+  phase: "post",
+  paperSet: "optical",
+  paper: "FSO Performance Analysis",
+  sentences: [
+    {
+      id: "fsop-post-1",
+      statement:
+        "FSO 위성 네트워크에서 아웃티지 확률은 순간 SNR이 요구 임계값 이하로 떨어지는 확률로 정의되며, 링크 불가용성을 나타낸다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Outage probability is defined as the probability that the instantaneous SNR falls below a required threshold, representing link unavailability.",
+      evidencePage: 2
+    },
+    {
+      id: "fsop-post-2",
+      statement:
+        "대기 난류는 수신 광신호에 강도 변동(신틸레이션)을 유발하며, 약한 난류에는 로그 정규 분포, 중간에서 강한 난류에는 감마-감마 분포로 모델링할 수 있다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Atmospheric turbulence causes intensity fluctuations modeled by lognormal distributions for weak turbulence and Gamma-Gamma distributions for moderate-to-strong turbulence.",
+      evidencePage: 3
+    },
+    {
+      id: "fsop-post-3",
+      statement:
+        "리토프 분산이 높을수록 신호 변동이 여러 간섭 시간에 걸쳐 평균화되므로 FSO 링크의 아웃티지 확률이 감소한다.",
+      isNoise: true,
+      errorType: "direction",
+      evidenceQuote:
+        "Stronger atmospheric turbulence (higher Rytov variance) leads to deeper fading events and higher outage probability in FSO links.",
+      evidencePage: 4,
+      correctedStatement:
+        "리토프 분산이 높을수록 FSO 링크에서 더 깊은 페이딩 이벤트가 발생하여 아웃티지 확률이 증가한다.",
+      explanation:
+        "강한 난류(높은 리토프 분산)는 더 깊고 빈번한 신호 감쇠를 유발해 아웃티지 확률을 높인다. 방향이 반전된 오류다."
+    },
+    {
+      id: "fsop-post-4",
+      statement:
+        "FSO 위성 네트워크에서 전력 제어는 변화하는 대기 감쇠 조건에서 요구 링크 마진을 유지하기 위해 활용될 수 있다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Transmission power control can be used to maintain the required link margin under varying atmospheric attenuation conditions.",
+      evidencePage: 4
+    },
+    {
+      id: "fsop-post-5",
+      statement:
+        "감마-감마 난류 모델을 사용한다는 것은 모든 강한 난류 조건에서 FSO 링크가 신뢰할 수 없음을 직접적으로 증명하며, FSO가 위성 통신에 부적합함을 의미한다.",
+      isNoise: true,
+      errorType: "causality",
+      evidenceQuote:
+        "The Gamma-Gamma model characterizes intensity fluctuation statistics under moderate-to-strong turbulence and enables statistical performance analysis for system design; reliability depends on system parameters and design margins.",
+      evidencePage: 3,
+      correctedStatement:
+        "감마-감마 모델은 중간에서 강한 난류 하에서의 강도 변동 통계를 정확히 묘사하며, 실제 신뢰성은 시스템 설계 마진과 파라미터에 따라 달라진다.",
+      explanation:
+        "통계 모델의 채택이 시스템 부적합성을 증명하지는 않는다. 설계 여유를 충분히 확보하면 FSO 위성 링크도 신뢰할 수 있다. 인과관계 오류다."
+    },
+    {
+      id: "fsop-post-6",
+      statement:
+        "FSO 위성 네트워크의 지연은 빛의 속도로 나눈 거리에 해당하는 전파 지연과 지상국 및 위성에서의 처리 지연을 포함한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Latency includes propagation delay (distance divided by the speed of light) and processing delays at ground stations and on-board the satellite.",
+      evidencePage: 5
+    },
+    {
+      id: "fsop-post-7",
+      statement:
+        "이 논문의 아웃티지 확률 분석은 충분한 송신 전력을 적용하면 난류 조건과 무관하게 FSO 위성 네트워크의 아웃티지 확률을 0으로 만들 수 있음을 보여준다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote:
+        "Increasing transmission power reduces outage probability; however, stochastic turbulence ensures residual outage probability remains non-zero under strong turbulence conditions.",
+      evidencePage: 4,
+      correctedStatement:
+        "송신 전력 증가는 아웃티지 확률을 감소시키지만, 확률론적 난류 특성으로 인해 강한 난류 조건에서는 잔류 아웃티지 확률이 항상 0보다 크다.",
+      explanation:
+        "아웃티지 확률은 줄일 수 있지만 확률적 난류 특성상 완전히 0으로 만들 수 없다. '0으로 만들 수 있다'는 것은 범위 과장 오류다."
+    },
+    {
+      id: "fsop-post-8",
+      statement:
+        "FSO 위성 네트워크의 커버리지 확률은 링크 품질이 최소 성능 요구사항을 충족하는 시간 또는 지리적 면적의 비율을 나타낸다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote:
+        "Coverage probability represents the fraction of time or geographical area over which link quality meets minimum performance requirements.",
+      evidencePage: 5
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
 // 인덱스
 // ─────────────────────────────────────────────────────────────
 export const sentenceSets: SentenceSet[] = [
@@ -573,11 +857,14 @@ export const sentenceSets: SentenceSet[] = [
   maePost,
   timesfmPre,
   timesfmFiltering,
-  chronosPost
+  chronosPost,
+  fsoPre,
+  fsoFiltering,
+  fsoPerfPost
 ];
 
 export function getSentenceSet(
-  paperSet: "vision" | "timeseries",
+  paperSet: "vision" | "timeseries" | "optical",
   phase: "pre" | "filtering" | "post"
 ): SentenceSet {
   const set = sentenceSets.find((s) => s.paperSet === paperSet && s.phase === phase);

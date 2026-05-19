@@ -4,7 +4,7 @@ import type { Phase } from "@/lib/schemas";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const paperSet = searchParams.get("paperSet") as "vision" | "timeseries" | null;
+  const paperSet = searchParams.get("paperSet") as "vision" | "timeseries" | "optical" | null;
   const phase = searchParams.get("phase") as Phase | null;
 
   if (!paperSet || !phase) {

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   if (type === "filtering") {
     const { paperSet, phase, sentenceId, userResponse, userRevision, confidence, responseTimeMs } =
       body as {
-        paperSet: "vision" | "timeseries";
+        paperSet: "vision" | "timeseries" | "optical";
         phase: Phase;
         sentenceId: string;
         userResponse: UserResponse;

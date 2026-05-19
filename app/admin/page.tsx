@@ -89,7 +89,7 @@ export default function AdminPage() {
                     <td className="px-4 py-3 font-semibold">{s.participantId}</td>
                     <td className="px-4 py-3 text-stone-600">집단 {s.groupNum}</td>
                     <td className="px-4 py-3 text-stone-600">
-                      {s.paperSet === "vision" ? "비전 (I-JEPA + MAE)" : "시계열 (TimesFM + Chronos)"}
+                      {s.paperSet === "vision" ? "비전 (I-JEPA + MAE)" : s.paperSet === "timeseries" ? "시계열 (TimesFM + Chronos)" : "광통신 (FSO + FSO-Perf)"}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
