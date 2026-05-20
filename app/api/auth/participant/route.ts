@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { signToken } from "@/lib/auth";
-import { getSession, createSession } from "@/lib/db";
+import { generateToken } from "@/lib/auth";
+import { getSession, createSession, createAuthSession } from "@/lib/db";
 import { sessionSchema, type Session } from "@/lib/schemas";
 
-const PARTICIPANT_COOKIE = {
+const COOKIE = {
   httpOnly: true,
   sameSite: "lax" as const,
   path: "/",
@@ -38,8 +38,10 @@ export async function POST(request: Request) {
     await createSession(session);
   }
 
-  const token = await signToken({ role: "participant", participantId });
+  const token = generateToken();
+  await createAuthSession(token, "participant", participantId, 7 * 24);
+
   const res = NextResponse.json({ redirectTo: `/experiment/${session.currentStep}` });
-  res.cookies.set("participant_token", token, PARTICIPANT_COOKIE);
+  res.cookies.set("participant_token", token, COOKIE);
   return res;
 }

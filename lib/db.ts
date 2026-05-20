@@ -115,3 +115,42 @@ export async function getSurveyResponses(participantId?: string): Promise<Survey
     timestamp: row.created_at as string
   }));
 }
+
+// ── 인증 세션 ─────────────────────────────────────────────────
+export type AuthSessionRow = {
+  token: string;
+  role: "participant" | "researcher";
+  identity: string;
+  expiresAt: string;
+};
+
+export async function createAuthSession(
+  token: string,
+  role: "participant" | "researcher",
+  identity: string,
+  expiresInHours: number
+): Promise<void> {
+  const expiresAt = new Date(Date.now() + expiresInHours * 3_600_000).toISOString();
+  await getClient().from("auth_sessions").insert({ token, role, identity, expires_at: expiresAt });
+}
+
+export async function getAuthSession(token: string): Promise<AuthSessionRow | null> {
+  const now = new Date().toISOString();
+  const { data } = await getClient()
+    .from("auth_sessions")
+    .select("*")
+    .eq("token", token)
+    .gt("expires_at", now)
+    .maybeSingle();
+  if (!data) return null;
+  return {
+    token: data.token as string,
+    role: data.role as "participant" | "researcher",
+    identity: data.identity as string,
+    expiresAt: data.expires_at as string
+  };
+}
+
+export async function deleteAuthSession(token: string): Promise<void> {
+  await getClient().from("auth_sessions").delete().eq("token", token);
+}

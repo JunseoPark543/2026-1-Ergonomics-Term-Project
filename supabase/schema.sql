@@ -33,7 +33,16 @@ CREATE TABLE IF NOT EXISTS survey_responses (
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS auth_sessions (
+  token       TEXT PRIMARY KEY,
+  role        TEXT NOT NULL,
+  identity    TEXT NOT NULL,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Row-level security 비활성화 (service role key로만 접근)
-ALTER TABLE sessions           DISABLE ROW LEVEL SECURITY;
+ALTER TABLE sessions            DISABLE ROW LEVEL SECURITY;
 ALTER TABLE filtering_responses DISABLE ROW LEVEL SECURITY;
-ALTER TABLE survey_responses   DISABLE ROW LEVEL SECURITY;
+ALTER TABLE survey_responses    DISABLE ROW LEVEL SECURITY;
+ALTER TABLE auth_sessions       DISABLE ROW LEVEL SECURITY;

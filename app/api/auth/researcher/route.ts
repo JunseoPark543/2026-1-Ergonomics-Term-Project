@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
-import { signToken } from "@/lib/auth";
+import { generateToken } from "@/lib/auth";
+import { createAuthSession } from "@/lib/db";
 
-const RESEARCHER_COOKIE = {
+const COOKIE = {
   httpOnly: true,
   sameSite: "lax" as const,
   path: "/",
@@ -31,8 +32,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "아이디 또는 비밀번호가 틀렸습니다." }, { status: 401 });
   }
 
-  const token = await signToken({ role: "researcher", username });
+  const token = generateToken();
+  await createAuthSession(token, "researcher", username, 8);
+
   const res = NextResponse.json({ redirectTo: "/admin" });
-  res.cookies.set("researcher_token", token, RESEARCHER_COOKIE);
+  res.cookies.set("researcher_token", token, COOKIE);
   return res;
 }
