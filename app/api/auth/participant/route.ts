@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     session = sessionSchema.parse({
       ...assignGroup(participantId),
       participantId,
-      currentStep: "reading",
+      currentStep: "guide",
       createdAt: new Date().toISOString()
     });
     await createSession(session);

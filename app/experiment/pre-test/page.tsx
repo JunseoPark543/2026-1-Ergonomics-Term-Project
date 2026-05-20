@@ -24,8 +24,8 @@ export default function PreTestPage() {
       participantId={me!.participantId}
       paperSet={me!.paperSet}
       phase="pre"
-      title="사전 테스트"
-      description="아래 요약 문장을 원문 근거와 비교하여 판단해 주세요. 이 단계에서는 정답 피드백이 제공되지 않습니다."
+      title="1차 판단"
+      description="왼쪽 원문 근거를 확인하면서 AI 요약 문장이 올바른지 판단해 주세요. 이 단계에서는 정답 여부를 알려드리지 않습니다."
       showScore={false}
       onComplete={handleComplete}
     />

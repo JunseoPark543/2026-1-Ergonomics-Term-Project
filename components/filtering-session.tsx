@@ -22,10 +22,10 @@ type FeedbackState = {
 };
 
 const responseOptions: { value: UserResponse; label: string; icon: React.ReactNode }[] = [
-  { value: "accept",      label: "수용",      icon: <CheckCircle size={16} /> },
-  { value: "reject",      label: "기각",      icon: <XCircle size={16} /> },
-  { value: "revise",      label: "수정",      icon: <AlertCircle size={16} /> },
-  { value: "insufficient", label: "근거 부족", icon: <HelpCircle size={16} /> }
+  { value: "accept",       label: "원문과 일치", icon: <CheckCircle size={16} /> },
+  { value: "reject",       label: "오류 있음",   icon: <XCircle size={16} /> },
+  { value: "revise",       label: "직접 수정",   icon: <AlertCircle size={16} /> },
+  { value: "insufficient", label: "근거 부족",   icon: <HelpCircle size={16} /> }
 ];
 
 export default function FilteringSession({ participantId, paperSet, phase, title, description, showScore, onComplete }: Props) {
@@ -123,7 +123,7 @@ export default function FilteringSession({ participantId, paperSet, phase, title
           </div>
           {showScore && (
             <div className="rounded-md border border-stone-200 bg-paper px-4 py-2 text-center">
-              <div className="text-[11px] text-stone-500">경계 점수</div>
+              <div className="text-[11px] text-stone-500">검토 점수</div>
               <div className="text-xl font-bold text-ink">
                 {totalScore} <span className="text-sm font-normal text-stone-500">/ {maxScore}</span>
               </div>
@@ -187,7 +187,7 @@ export default function FilteringSession({ participantId, paperSet, phase, title
                   <textarea
                     className="mt-3 w-full rounded-md border border-stone-300 p-2 text-sm"
                     rows={3}
-                    placeholder="올바른 내용으로 직접 수정해 주세요."
+                    placeholder="오류라고 생각하는 부분을 올바른 내용으로 직접 고쳐 작성해 주세요."
                     value={revision}
                     onChange={(e) => setRevision(e.target.value)}
                   />
@@ -195,7 +195,7 @@ export default function FilteringSession({ participantId, paperSet, phase, title
 
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-xs text-stone-500">
-                    <span>판단 확신도</span>
+                    <span>이 판단에 얼마나 확신하시나요?</span>
                     <span className="font-semibold text-ink">{confidence}점</span>
                   </div>
                   <input
@@ -204,7 +204,7 @@ export default function FilteringSession({ participantId, paperSet, phase, title
                     className="mt-1 w-full accent-signal"
                   />
                   <div className="flex justify-between text-[10px] text-stone-400">
-                    <span>전혀 확신 없음</span><span>매우 확신</span>
+                    <span>1 — 전혀 확신 없음</span><span>5 — 매우 확신</span>
                   </div>
                 </div>
 

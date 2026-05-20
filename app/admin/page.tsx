@@ -6,15 +6,16 @@ import { Download, LogOut, RotateCcw, Trash2, AlertTriangle } from "lucide-react
 import type { Session } from "@/lib/schemas";
 
 const STEP_LABEL: Record<string, string> = {
+  guide: "실험 안내",
   reading: "논문 읽기",
-  "pre-test": "사전 테스트",
-  filtering: "필터링 개입",
-  "post-test": "사후 테스트",
+  "pre-test": "1차 판단",
+  filtering: "AI 요약 검토",
+  "post-test": "2차 판단",
   survey: "설문",
   done: "완료"
 };
 
-const STEPS = ["reading", "pre-test", "filtering", "post-test", "survey", "done"] as const;
+const STEPS = ["guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"] as const;
 
 export default function AdminPage() {
   const router = useRouter();

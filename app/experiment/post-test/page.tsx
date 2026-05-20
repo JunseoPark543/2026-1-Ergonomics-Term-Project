@@ -24,8 +24,8 @@ export default function PostTestPage() {
       participantId={me!.participantId}
       paperSet={me!.paperSet}
       phase="post"
-      title="사후 테스트"
-      description="새로운 요약 문장 세트를 동일한 방식으로 판단해 주세요. 이 단계에서는 피드백이 최소화됩니다."
+      title="2차 판단"
+      description="새로운 요약 문장 세트를 동일한 방식으로 판단해 주세요. 이 단계에서는 정답 여부를 알려드리지 않습니다."
       showScore={false}
       onComplete={handleComplete}
     />

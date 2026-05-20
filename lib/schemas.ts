@@ -5,7 +5,7 @@ export const sessionSchema = z.object({
   participantId: z.string(),           // "01" ~ "06"
   groupNum: z.union([z.literal(1), z.literal(2)]),  // 1=홀수(구조도↑), 2=짝수(요약문↑)
   paperSet: z.union([z.literal("vision"), z.literal("timeseries"), z.literal("optical")]),
-  currentStep: z.enum(["reading", "pre-test", "filtering", "post-test", "survey", "done"]),
+  currentStep: z.enum(["guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"]),
   createdAt: z.string()
 });
 

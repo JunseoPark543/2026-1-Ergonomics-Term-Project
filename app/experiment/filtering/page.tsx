@@ -24,8 +24,8 @@ export default function FilteringPage() {
       participantId={me!.participantId}
       paperSet={me!.paperSet}
       phase="filtering"
-      title="필터링 인터페이스"
-      description="요약 문장을 판단한 후 즉시 정답 피드백과 경계 점수를 확인할 수 있습니다."
+      title="AI 요약 검토"
+      description="원문 근거와 비교하며 각 요약 문장을 판단해 주세요. 판단 후 즉시 정답과 검토 점수를 확인할 수 있습니다."
       showScore={true}
       onComplete={handleComplete}
     />

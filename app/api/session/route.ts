@@ -5,7 +5,7 @@ import type { Session } from "@/lib/schemas";
 import { getAuthContext } from "@/lib/api-auth";
 
 const STEP_ORDER: Session["currentStep"][] = [
-  "reading", "pre-test", "filtering", "post-test", "survey", "done"
+  "guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"
 ];
 
 export async function GET(request: NextRequest) {
