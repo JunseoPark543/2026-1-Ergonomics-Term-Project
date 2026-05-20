@@ -116,6 +116,32 @@ export async function getSurveyResponses(participantId?: string): Promise<Survey
   }));
 }
 
+// ── 관리자 초기화 ─────────────────────────────────────────────
+export async function resetParticipantStep(
+  participantId: string,
+  step: Session["currentStep"] = "reading"
+): Promise<void> {
+  await getClient().from("sessions").update({ current_step: step }).eq("participant_id", participantId);
+  // 해당 참가자의 인증 세션 삭제 (재로그인 유도)
+  await getClient()
+    .from("auth_sessions")
+    .delete()
+    .eq("role", "participant")
+    .eq("identity", participantId);
+}
+
+export async function deleteParticipantResponses(participantId: string): Promise<void> {
+  await getClient().from("filtering_responses").delete().eq("participant_id", participantId);
+  await getClient().from("survey_responses").delete().eq("participant_id", participantId);
+}
+
+export async function resetAllData(): Promise<void> {
+  await getClient().from("auth_sessions").delete().neq("token", "___none___");
+  await getClient().from("filtering_responses").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await getClient().from("survey_responses").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await getClient().from("sessions").delete().neq("participant_id", "___none___");
+}
+
 // ── 인증 세션 ─────────────────────────────────────────────────
 export type AuthSessionRow = {
   token: string;
