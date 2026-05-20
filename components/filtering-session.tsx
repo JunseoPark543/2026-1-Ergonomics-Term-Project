@@ -7,7 +7,7 @@ import { errorTypeLabel } from "@/lib/scoring";
 
 type Props = {
   participantId: string;
-  paperSet: "vision" | "timeseries";
+  paperSet: "vision" | "timeseries" | "optical";
   phase: Phase;
   title: string;
   description: string;
