@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, ExternalLink, ChevronRight } from "lucide-react";
+import { BookOpen, ExternalLink, ChevronRight, Network } from "lucide-react";
 import { useParticipant } from "@/components/use-participant";
+import ConceptMap, { type ConceptMapHandle } from "@/components/concept-map";
 
 const PAPER_INFO: Record<"vision" | "timeseries" | "optical", { title: string; pdfUrl: string }> = {
   vision: {
@@ -25,6 +26,7 @@ export default function ReadingPage() {
   const { me, ready } = useParticipant("reading");
   const [confirmed, setConfirmed] = useState(false);
   const [advancing, setAdvancing] = useState(false);
+  const mapRef = useRef<ConceptMapHandle>(null);
 
   if (!ready) {
     return (
@@ -35,10 +37,30 @@ export default function ReadingPage() {
   }
 
   const paper = PAPER_INFO[me!.paperSet];
+  const showConceptMap = me!.groupNum === 1;
 
   async function handleComplete() {
     if (!confirmed) return;
     setAdvancing(true);
+
+    // Group 1: save concept map before advancing
+    if (showConceptMap && mapRef.current) {
+      const data = mapRef.current.getData();
+      await fetch("/api/concept-map", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paperSet: me!.paperSet,
+          nodes: data.nodes,
+          edges: data.edges,
+          nodeCount: data.nodes.length,
+          edgeCount: data.edges.length,
+          editCount: data.editCount,
+          durationSec: data.durationSec
+        })
+      }).catch(() => null);
+    }
+
     await fetch("/api/session", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -84,33 +106,42 @@ export default function ReadingPage() {
             disabled={!confirmed || advancing}
             className="flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-stone-300"
           >
-            {advancing ? "이동 중..." : "테스트 시작"} <ChevronRight size={15} />
+            {advancing ? "저장 중..." : "테스트 시작"} <ChevronRight size={15} />
           </button>
         </div>
       </header>
 
-      {/* PDF 뷰어 */}
-      <div className="relative flex-1 overflow-hidden bg-stone-200">
-        <iframe
-          src={paper.pdfUrl}
-          title={paper.title}
-          className="h-full w-full border-0 bg-white"
-          allowFullScreen
-        />
-        {/* iframe 차단 시 fallback */}
-        <noscript>
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-stone-100 p-8 text-center">
-            <p className="text-stone-600">PDF를 이 창에서 표시할 수 없습니다.</p>
-            <a
-              href={paper.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md bg-ink px-4 py-2 text-white"
-            >
-              새 탭에서 논문 열기
-            </a>
-          </div>
-        </noscript>
+      {/* 본문 — 개념도 여부에 따라 분할 또는 전체 */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* PDF 뷰어 */}
+        <div className={`relative ${showConceptMap ? "w-[60%]" : "flex-1"} overflow-hidden bg-stone-200`}>
+          <iframe
+            src={paper.pdfUrl}
+            title={paper.title}
+            className="h-full w-full border-0 bg-white"
+            allowFullScreen
+          />
+        </div>
+
+        {/* 개념도 패널 (Group 1만) */}
+        {showConceptMap && (
+          <aside className="flex w-[40%] flex-col gap-0 border-l border-stone-200 bg-white">
+            <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-2.5">
+              <Network size={16} className="text-moss" />
+              <h2 className="text-sm font-bold text-ink">개념도 구성하기</h2>
+              <span className="ml-auto text-[10px] text-stone-400">구조도 조건</span>
+            </div>
+            <div className="flex-1 overflow-hidden px-4 pb-4 pt-3">
+              <p className="mb-2 text-xs text-stone-500">
+                논문에서 중요한 개념어를 추가하고 관계를 연결해 보세요.
+                읽으면서 구성하고, 완료 후 &lsquo;테스트 시작&rsquo;을 클릭하면 자동 저장됩니다.
+              </p>
+              <div style={{ height: "calc(100% - 36px)" }}>
+                <ConceptMap ref={mapRef} />
+              </div>
+            </div>
+          </aside>
+        )}
       </div>
 
       {/* 하단 안내 */}

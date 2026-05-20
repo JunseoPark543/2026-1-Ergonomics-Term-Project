@@ -1,6 +1,39 @@
 import { createClient } from "@supabase/supabase-js";
 import type { FilteringResponse, Session, SurveyResponse } from "./schemas";
 
+export type ConceptMapRow = {
+  participantId: string;
+  paperSet: string;
+  nodeCount: number;
+  edgeCount: number;
+  editCount: number;
+  durationSec: number;
+  graphData: unknown;
+  createdAt: string;
+};
+
+export type QuizResponseRow = {
+  id: string;
+  participantId: string;
+  paperSet: string;
+  questionId: string;
+  questionType: string;
+  answer: string;
+  isCorrect: boolean | null;
+  autoScore: number | null;
+  manualScore: number | null;
+  createdAt: string;
+};
+
+export type MetacognitionRow = {
+  id: string;
+  participantId: string;
+  paperSet: string;
+  memoryPercent: number;
+  expectedScore: number;
+  createdAt: string;
+};
+
 function getClient() {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -116,6 +149,123 @@ export async function getSurveyResponses(participantId?: string): Promise<Survey
   }));
 }
 
+// ── 독해 완료 시각 ────────────────────────────────────────────
+export async function setReadingCompletedAt(participantId: string): Promise<void> {
+  await getClient()
+    .from("sessions")
+    .update({ reading_completed_at: new Date().toISOString() })
+    .eq("participant_id", participantId);
+}
+
+// ── 개념도 ────────────────────────────────────────────────────
+export async function saveConceptMap(data: {
+  participantId: string;
+  paperSet: string;
+  nodeCount: number;
+  edgeCount: number;
+  editCount: number;
+  durationSec: number;
+  graphData: unknown;
+}): Promise<void> {
+  await getClient().from("concept_maps").upsert({
+    participant_id: data.participantId,
+    paper_set: data.paperSet,
+    node_count: data.nodeCount,
+    edge_count: data.edgeCount,
+    edit_count: data.editCount,
+    duration_sec: data.durationSec,
+    graph_data: data.graphData
+  }, { onConflict: "participant_id" });
+}
+
+export async function getConceptMaps(): Promise<ConceptMapRow[]> {
+  const { data } = await getClient().from("concept_maps").select("*").order("created_at");
+  return (data ?? []).map((r) => ({
+    participantId: r.participant_id as string,
+    paperSet: r.paper_set as string,
+    nodeCount: r.node_count as number,
+    edgeCount: r.edge_count as number,
+    editCount: r.edit_count as number,
+    durationSec: r.duration_sec as number,
+    graphData: r.graph_data,
+    createdAt: r.created_at as string
+  }));
+}
+
+// ── 메타인지 ──────────────────────────────────────────────────
+export async function saveMetacognition(data: {
+  participantId: string;
+  paperSet: string;
+  memoryPercent: number;
+  expectedScore: number;
+}): Promise<void> {
+  await getClient().from("metacognition").insert({
+    participant_id: data.participantId,
+    paper_set: data.paperSet,
+    memory_percent: data.memoryPercent,
+    expected_score: data.expectedScore
+  });
+}
+
+export async function getMetacognition(participantId?: string): Promise<MetacognitionRow[]> {
+  let q = getClient().from("metacognition").select("*").order("created_at");
+  if (participantId) q = q.eq("participant_id", participantId);
+  const { data } = await q;
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    participantId: r.participant_id as string,
+    paperSet: r.paper_set as string,
+    memoryPercent: r.memory_percent as number,
+    expectedScore: r.expected_score as number,
+    createdAt: r.created_at as string
+  }));
+}
+
+// ── 퀴즈 응답 ────────────────────────────────────────────────
+export async function saveQuizResponses(rows: {
+  participantId: string;
+  paperSet: string;
+  questionId: string;
+  questionType: string;
+  answer: string;
+  isCorrect: boolean | null;
+  autoScore: number | null;
+}[]): Promise<void> {
+  await getClient().from("quiz_responses").insert(
+    rows.map((r) => ({
+      participant_id: r.participantId,
+      paper_set: r.paperSet,
+      question_id: r.questionId,
+      question_type: r.questionType,
+      answer: r.answer,
+      is_correct: r.isCorrect,
+      auto_score: r.autoScore
+    }))
+  );
+}
+
+export async function getQuizResponses(participantId?: string): Promise<QuizResponseRow[]> {
+  let q = getClient().from("quiz_responses").select("*").order("created_at");
+  if (participantId) q = q.eq("participant_id", participantId);
+  const { data } = await q;
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    participantId: r.participant_id as string,
+    paperSet: r.paper_set as string,
+    questionId: r.question_id as string,
+    questionType: r.question_type as string,
+    answer: r.answer as string,
+    isCorrect: r.is_correct as boolean | null,
+    autoScore: r.auto_score as number | null,
+    manualScore: r.manual_score as number | null,
+    createdAt: r.created_at as string
+  }));
+}
+
+export async function updateQuizManualScore(id: string, manualScore: number): Promise<void> {
+  await getClient().from("quiz_responses").update({ manual_score: manualScore }).eq("id", id);
+}
+
 // ── 관리자 초기화 ─────────────────────────────────────────────
 export async function resetParticipantStep(
   participantId: string,
@@ -133,12 +283,18 @@ export async function resetParticipantStep(
 export async function deleteParticipantResponses(participantId: string): Promise<void> {
   await getClient().from("filtering_responses").delete().eq("participant_id", participantId);
   await getClient().from("survey_responses").delete().eq("participant_id", participantId);
+  await getClient().from("quiz_responses").delete().eq("participant_id", participantId);
+  await getClient().from("metacognition").delete().eq("participant_id", participantId);
+  await getClient().from("concept_maps").delete().eq("participant_id", participantId);
 }
 
 export async function resetAllData(): Promise<void> {
   await getClient().from("auth_sessions").delete().neq("token", "___none___");
   await getClient().from("filtering_responses").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   await getClient().from("survey_responses").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await getClient().from("quiz_responses").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await getClient().from("metacognition").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await getClient().from("concept_maps").delete().neq("id", "00000000-0000-0000-0000-000000000000");
   await getClient().from("sessions").delete().neq("participant_id", "___none___");
 }
 

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getSession, updateSessionStep } from "@/lib/db";
+import { getSession, updateSessionStep, setReadingCompletedAt } from "@/lib/db";
 import type { Session } from "@/lib/schemas";
 import { getAuthContext } from "@/lib/api-auth";
 
 const STEP_ORDER: Session["currentStep"][] = [
-  "guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"
+  "guide", "reading", "pre-test", "filtering", "post-test", "survey", "done", "quiz", "quiz-done"
 ];
 
 export async function GET(request: NextRequest) {
@@ -33,5 +33,9 @@ export async function PATCH(request: NextRequest) {
   if (!targetId) return NextResponse.json({ error: "participantId required" }, { status: 400 });
 
   await updateSessionStep(targetId, body.step);
+  // Group 2 participants (no concept map): record reading completion when advancing to pre-test
+  if (body.step === "pre-test" && participantId) {
+    setReadingCompletedAt(participantId).catch(() => null);
+  }
   return NextResponse.json({ ok: true });
 }

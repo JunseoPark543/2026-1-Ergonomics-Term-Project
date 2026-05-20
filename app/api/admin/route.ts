@@ -4,10 +4,24 @@ import {
   resetParticipantStep,
   deleteParticipantResponses,
   resetAllData,
-  getAllSessions
+  getAllSessions,
+  getConceptMaps,
+  getQuizResponses,
+  getMetacognition
 } from "@/lib/db";
 import { getResearcherUser } from "@/lib/api-auth";
 import type { Session } from "@/lib/schemas";
+
+export async function GET(request: NextRequest) {
+  const researcher = await getResearcherUser(request);
+  if (!researcher) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  const resource = new URL(request.url).searchParams.get("resource");
+  if (resource === "concept-maps") return NextResponse.json(await getConceptMaps());
+  if (resource === "quiz-responses") return NextResponse.json(await getQuizResponses());
+  if (resource === "metacognition") return NextResponse.json(await getMetacognition());
+  return NextResponse.json({ error: "unknown resource" }, { status: 400 });
+}
 
 export async function POST(request: NextRequest) {
   const researcher = await getResearcherUser(request);

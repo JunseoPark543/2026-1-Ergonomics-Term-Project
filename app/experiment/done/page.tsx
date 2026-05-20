@@ -76,6 +76,13 @@ export default function DonePage() {
           </div>
         )}
 
+        <div className="rounded-xl border border-signal/20 bg-blue-50 p-4 text-sm text-blue-900">
+          <p className="font-semibold mb-1">지연 퀴즈 안내</p>
+          <p className="text-xs leading-5">
+            48~72시간 후 연구자가 퀴즈를 활성화하면 같은 방법으로 다시 로그인하여 퀴즈에 참여해 주세요.
+            퀴즈는 논문 읽기 직후 떠올리는 내용을 측정합니다.
+          </p>
+        </div>
         <p className="text-center text-xs text-stone-400">화면을 닫아도 됩니다. 연구자에게 완료 사실을 알려주세요.</p>
       </div>
     </main>
