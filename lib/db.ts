@@ -80,8 +80,13 @@ export async function updateSessionStep(
     .eq("participant_id", participantId);
 }
 
+export async function countSessions(): Promise<number> {
+  const { count } = await getClient().from("sessions").select("*", { count: "exact", head: true });
+  return count ?? 0;
+}
+
 export async function getAllSessions(): Promise<Session[]> {
-  const { data } = await getClient().from("sessions").select("*").order("participant_id");
+  const { data } = await getClient().from("sessions").select("*").order("created_at");
   return (data ?? []).map(rowToSession);
 }
 

@@ -11,26 +11,25 @@ const COOKIE = {
   maxAge: 60 * 60 * 24 * 7
 };
 
-function assignGroup(participantId: string): Pick<Session, "groupNum" | "paperSet"> {
-  const num = parseInt(participantId, 10);
-  return {
-    groupNum: (num % 2 === 1 ? 1 : 2) as 1 | 2,
-    paperSet: num <= 2 ? "vision" : num <= 4 ? "timeseries" : "optical"
-  };
-}
+const PARTICIPANTS: Record<string, Pick<Session, "groupNum" | "paperSet">> = {
+  "추승준": { groupNum: 1, paperSet: "vision" },
+  "유선호": { groupNum: 2, paperSet: "timeseries" },
+  "홍성민": { groupNum: 1, paperSet: "optical" },
+};
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null) as { participantId?: string } | null;
-  const participantId = body?.participantId?.trim().padStart(2, "0") ?? "";
+  const participantId = body?.participantId?.trim() ?? "";
 
-  if (!/^0[1-6]$/.test(participantId)) {
-    return NextResponse.json({ error: "참가자 번호는 01~06이어야 합니다." }, { status: 400 });
+  const assignment = PARTICIPANTS[participantId];
+  if (!assignment) {
+    return NextResponse.json({ error: "등록된 참가자 이름이 아닙니다." }, { status: 400 });
   }
 
   let session = await getSession(participantId);
   if (!session) {
     session = sessionSchema.parse({
-      ...assignGroup(participantId),
+      ...assignment,
       participantId,
       currentStep: "guide",
       createdAt: new Date().toISOString()
