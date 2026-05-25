@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     const data = await getAllSessions();
     const rows = data.map((s) => [
       s.participantId, `집단${s.groupNum}`,
-      s.paperSet==="vision"?"비전(I-JEPA+MAE)":s.paperSet==="timeseries"?"시계열(TimesFM+Chronos)":"광통신(FSO+FSO-Perf)",
+      s.paperSet==="vision"?"비전(I-JEPA)":s.paperSet==="timeseries"?"시계열(TimesFM)":s.paperSet==="optical"?"광통신(FSO)":"선형계획법",
       s.currentStep, s.createdAt
     ]);
     return csv(toCsv([headers, ...rows]), "sessions.csv");

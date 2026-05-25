@@ -155,7 +155,7 @@ export default function GuidePage() {
           <ul className="space-y-1 text-xs">
             <li>• 논문을 충분히 읽은 후 판단에 임해주세요.</li>
             <li>• 판단 시 반드시 왼쪽 <strong>원문 근거</strong>를 확인해주세요.</li>
-            <li>• 중간에 창을 닫아도 같은 이름으로 로그인하면 이어서 진행됩니다.</li>
+            <li>• 중간에 창을 닫아도 같은 번호로 로그인하면 이어서 진행됩니다.</li>
             <li>• 모든 단계를 완료해야 실험이 종료됩니다.</li>
           </ul>
         </div>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>실험 설계 및 구현 명세서</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #1c1917;
+      background: #fafaf9;
+    }
+
+    /* 레이아웃 */
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* 제목 블록 */
+    .doc-header {
+      border-bottom: 2px solid #1c1917;
+      padding-bottom: 20px;
+      margin-bottom: 40px;
+    }
+    .doc-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .doc-meta {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #78716c;
+    }
+
+    /* 섹션 */
+    section {
+      margin-bottom: 48px;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1c1917;
+      border-left: 4px solid #4d7c0f;
+      padding-left: 12px;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #44403c;
+      margin: 20px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    p { margin-bottom: 10px; }
+
+    strong { font-weight: 700; }
+
+    /* 인라인 코드 */
+    code {
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      background: #f5f5f4;
+      border: 1px solid #e7e5e4;
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #292524;
+    }
+
+    /* 코드 블록 */
+    pre {
+      background: #1c1917;
+      color: #e7e5e4;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    /* 목록 */
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    li { margin-bottom: 4px; }
+
+    /* 테이블 */
+    .table-wrap { overflow-x: auto; margin: 12px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead tr {
+      background: #1c1917;
+      color: #fafaf9;
+    }
+    thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: #f5f5f4; }
+    tbody tr:hover { background: #e7e5e4; }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e7e5e4;
+      vertical-align: top;
+    }
+
+    /* 배지 */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-amber  { background: #fef3c7; color: #92400e; }
+    .badge-stone  { background: #f5f5f4; color: #44403c; border: 1px solid #d6d3d1; }
+
+    /* 콜아웃 */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+    .callout-info    { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e3a5f; }
+    .callout-warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #78350f; }
+    .callout-tip     { background: #f0fdf4; border-left: 4px solid #22c55e; color: #14532d; }
+
+    /* 플로우 다이어그램 */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      align-items: center;
+      margin: 16px 0;
+    }
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .flow-box {
+      background: #1c1917;
+      color: #fafaf9;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .flow-url {
+      font-size: 11px;
+      color: #78716c;
+      font-family: monospace;
+    }
+    .flow-arrow {
+      font-size: 18px;
+      color: #a8a29e;
+      padding: 0 6px;
+      margin-top: -16px;
+    }
+
+    /* 점수 카드 */
+    .score-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 12px 0;
+    }
+    .score-card {
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      background: #fff;
+    }
+    .score-card .label { font-size: 12px; color: #78716c; margin-bottom: 6px; }
+    .score-card .value { font-size: 28px; font-weight: 800; color: #1c1917; }
+    .score-card .sub   { font-size: 12px; color: #a8a29e; margin-top: 4px; }
+
+    /* 주의사항 번호 */
+    .caution-list {
+      list-style: none;
+      padding: 0;
+    }
+    .caution-list li {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+    .caution-num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: #f59e0b;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    /* 반응형 */
+    @media (max-width: 600px) {
+      .score-cards { grid-template-columns: 1fr; }
+      .flow { gap: 4px; }
+    }
+
+    hr { border: none; border-top: 1px solid #e7e5e4; margin: 40px 0; }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- 문서 헤더 -->
+  <div class="doc-header">
+    <h1>실험 설계 및 구현 명세서</h1>
+    <div class="doc-meta">생성일: 2026-05-24 &nbsp;·&nbsp; 목적: 실험 결과의 정확한 해석을 위한 구현 기준 문서</div>
+  </div>
+
+  <!-- 1. 실험 개요 -->
+  <section>
+    <h2>1. 실험 개요</h2>
+    <p><strong>연구 주제:</strong> AI가 생성한 논문 요약문의 오류를 탐지하는 능력에 대해,<br>
+    (A) 피드백이 있는 AI 요약 검토 인터페이스와<br>
+    (B) 논문 읽기 중 개념도 구성 도구가 각각 어떤 효과를 미치는지 측정한다.</p>
+
+    <h3>독립변인</h3>
+    <ul>
+      <li>필터링 인터페이스 (AI 요약 검토 + 즉각 피드백) — <strong>전원 적용</strong></li>
+      <li>개념도 구성 도구 — <strong>집단 1만 적용</strong></li>
+    </ul>
+
+    <h3>종속변인</h3>
+    <ul>
+      <li>오류 탐지율 (1차 → 2차 판단 점수 변화)</li>
+      <li>판단 확신도 (1–5점 리커트)</li>
+      <li>응답 시간 (ms)</li>
+      <li>사용 경험 만족도 설문 (리커트 1–5)</li>
+      <li>개념도 복잡도 지표 (집단 1 한정)</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 2. 참가자 및 집단 배정 -->
+  <section>
+    <h2>2. 참가자 및 집단 배정</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>이름</th><th>논문 그룹</th><th>집단</th><th>개념도</th><th>설문 문항 수</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>추승준</strong></td>
+            <td><span class="badge badge-blue">vision</span></td>
+            <td>1</td>
+            <td><span class="badge badge-green">O</span></td>
+            <td>10문항</td>
+          </tr>
+          <tr>
+            <td><strong>유선호</strong></td>
+            <td><span class="badge badge-amber">timeseries</span></td>
+            <td>2</td>
+            <td><span class="badge badge-red">X</span></td>
+            <td>5문항</td>
+          </tr>
+          <tr>
+            <td><strong>홍성민</strong></td>
+            <td><span class="badge badge-stone">optical</span></td>
+            <td>1</td>
+            <td><span class="badge badge-green">O</span></td>
+            <td>10문항</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>집단 1 (구조도 조건):</strong> 논문 읽기 화면 좌 60% PDF · 우 40% 개념도 패널</li>
+      <li><strong>집단 2 (요약문 조건):</strong> 논문 읽기 화면 전체 PDF · 개념도 없음</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 3. 실험 진행 단계 -->
+  <section>
+    <h2>3. 실험 진행 단계 (플로우)</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-box">로그인</div>
+        <div class="flow-url">/</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">안내</div>
+        <div class="flow-url">guide</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">논문 읽기</div>
+        <div class="flow-url">reading</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">1차 판단</div>
+        <div class="flow-url">pre-test</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">AI 요약 검토</div>
+        <div class="flow-url">filtering</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">2차 판단</div>
+        <div class="flow-url">post-test</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">설문</div>
+        <div class="flow-url">survey</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-box">완료</div>
+        <div class="flow-url">done</div>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      세션이 특정 단계에 있는 참가자가 다른 URL로 접근하면 자동으로 현재 단계로 리다이렉트된다.
+      세션은 Supabase <code>sessions</code> 테이블에 유지되어 중단 후 재접속 시 이어서 진행된다.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 4. 논문 및 문장 세트 -->
+  <section>
+    <h2>4. 논문 및 문장 세트 구성</h2>
+
+    <h3>4.1 논문 배정</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>논문 그룹</th><th>1차 판단 / AI 요약 검토</th><th>2차 판단</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">vision</span></td>
+            <td>I-JEPA (Self-Supervised Learning)</td>
+            <td>MAE (Masked Autoencoders)</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-amber">timeseries</span></td>
+            <td>TimesFM (Decoder-Only Foundation Model)</td>
+            <td>Chronos</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-stone">optical</span></td>
+            <td>FSO Link Budget Analysis</td>
+            <td>FSO Performance Analysis</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-tip">
+      1차 판단과 AI 요약 검토는 <strong>동일 논문</strong>에서 출제된 다른 문장 세트.<br>
+      2차 판단은 <strong>같은 도메인의 다른 논문</strong>에서 출제되어 학습 전이(transfer)를 측정.
+    </div>
+
+    <h3>4.2 단계별 문장 수 및 구성</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>단계</th><th>총 문장 수</th><th>오류 문장(noise)</th><th>정상 문장</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1차 판단 (pre)</td><td>8</td><td>3</td><td>5</td></tr>
+          <tr><td>AI 요약 검토 (filtering)</td><td>6</td><td>2</td><td>4</td></tr>
+          <tr><td>2차 판단 (post)</td><td>8</td><td>3</td><td>5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>모든 논문 그룹에서 동일한 구성 비율 적용.</strong></p>
+
+    <h3>4.3 삽입 오류 유형 (4종)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>오류 유형</th><th>코드</th><th>설명</th><th>포함 단계</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>방향성 오류</td>
+            <td><code>direction</code></td>
+            <td>수치·방향이 원문과 반대</td>
+            <td>pre, post</td>
+          </tr>
+          <tr>
+            <td>인과관계 오류</td>
+            <td><code>causality</code></td>
+            <td>상관관계를 인과로 과장</td>
+            <td>pre, post</td>
+          </tr>
+          <tr>
+            <td>범위 과장</td>
+            <td><code>scope</code></td>
+            <td>"모든", "항상" 등 범위 확대</td>
+            <td>pre, filtering, post</td>
+          </tr>
+          <tr>
+            <td>한계점 삭제</td>
+            <td><code>limitation</code></td>
+            <td>논문이 명시한 한계를 생략</td>
+            <td>filtering</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-warning">
+      filtering 단계에는 <code>direction</code>·<code>causality</code> 오류가 없고 <code>limitation</code>·<code>scope</code>만 포함.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 5. 판단 인터페이스 -->
+  <section>
+    <h2>5. 판단 인터페이스 및 응답 선택지</h2>
+    <p>참가자는 각 AI 요약 문장에 대해 다음 중 하나를 선택한다.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>선택지</th><th>코드</th><th>정답 조건</th><th>점수</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>원문과 일치</td>
+            <td><code>accept</code></td>
+            <td>정상 문장 (isNoise=false)</td>
+            <td><span class="badge badge-blue">+1점</span></td>
+          </tr>
+          <tr>
+            <td>오류 있음</td>
+            <td><code>reject</code></td>
+            <td>오류 문장 (isNoise=true)</td>
+            <td><span class="badge badge-green">+2점</span></td>
+          </tr>
+          <tr>
+            <td>직접 수정</td>
+            <td><code>revise</code></td>
+            <td>오류 문장 + 수정 텍스트 입력</td>
+            <td><span class="badge badge-green">+3점</span></td>
+          </tr>
+          <tr>
+            <td>근거 부족</td>
+            <td><code>insufficient</code></td>
+            <td>정답 없음 (항상 오답)</td>
+            <td><span class="badge badge-red">0점</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-warning">
+      오류 문장을 <code>accept</code>하거나 정상 문장을 <code>reject</code>/<code>revise</code>하면 0점.
+    </div>
+
+    <h3>5.1 단계별 최대 점수</h3>
+    <div class="score-cards">
+      <div class="score-card">
+        <div class="label">1차 판단 (pre)</div>
+        <div class="value">11점</div>
+        <div class="sub">정상 5×1 + 오류 3×2</div>
+      </div>
+      <div class="score-card">
+        <div class="label">AI 요약 검토 (filtering)</div>
+        <div class="value">8점</div>
+        <div class="sub">정상 4×1 + 오류 2×2</div>
+      </div>
+      <div class="score-card">
+        <div class="label">2차 판단 (post)</div>
+        <div class="value">11점</div>
+        <div class="sub">정상 5×1 + 오류 3×2</div>
+      </div>
+    </div>
+    <div class="callout callout-warning">
+      <code>revise</code> 선택 시 최대 3점이지만 최대 점수 계산 기준은 <code>reject</code>(2점) 기준.<br>
+      수정까지 올바르게 작성하면 최대 점수를 초과할 수 있음 (<code>score / maxScore &gt; 1</code>).
+    </div>
+
+    <h3>5.2 피드백 제공 여부</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>단계</th><th>즉각 피드백</th><th>검토 점수 표시</th><th>오류 유형 공개</th><th>정정 문장 공개</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1차 판단</td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+          </tr>
+          <tr>
+            <td>AI 요약 검토</td>
+            <td><span class="badge badge-green">O</span></td>
+            <td><span class="badge badge-green">O (누적)</span></td>
+            <td><span class="badge badge-green">O</span></td>
+            <td><span class="badge badge-green">O</span></td>
+          </tr>
+          <tr>
+            <td>2차 판단</td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+            <td><span class="badge badge-red">X</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>5.3 판단 확신도</h3>
+    <p>모든 단계에서 각 문장 판단 후 1–5점 슬라이더로 입력 (기본값 3). DB에 <code>confidence</code> 컬럼으로 저장.</p>
+  </section>
+
+  <hr>
+
+  <!-- 6. 응답 시간 -->
+  <section>
+    <h2>6. 응답 시간 측정</h2>
+    <ul>
+      <li>측정 단위: 밀리초(ms)</li>
+      <li>측정 구간: 문장 화면 표시 시점 ~ 확인 버튼 클릭 시점</li>
+      <li><code>response_time_ms</code> 컬럼으로 저장</li>
+      <li>피드백 확인 후 다음 문장으로 넘어갈 때 타이머 리셋</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 7. 개념도 도구 -->
+  <section>
+    <h2>7. 개념도 도구 <small style="font-size:13px;font-weight:400;color:#78716c;">(집단 1 한정)</small></h2>
+    <p>논문 읽기 단계에서 우측 40% 패널에 인터랙티브 개념도 작성 도구 제공.</p>
+
+    <h3>7.1 측정 지표</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>지표</th><th>설명</th><th>DB 컬럼</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>노드 수</td><td>최종 개념어 개수</td><td><code>node_count</code></td></tr>
+          <tr><td>연결 수</td><td>최종 관계선 개수</td><td><code>edge_count</code></td></tr>
+          <tr><td>수정 횟수</td><td>노드 추가/삭제/연결 총 횟수</td><td><code>edit_count</code></td></tr>
+          <tr><td>소요 시간</td><td>개념도 패널 최초 렌더 ~ 완료 버튼 클릭 (초)</td><td><code>duration_sec</code></td></tr>
+          <tr><td>그래프 원본</td><td>노드·엣지 전체 JSON</td><td><code>graph_data</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>7.2 저장 시점</h3>
+    <p>집단 1 참가자가 "테스트 시작" 버튼을 클릭할 때 <code>/api/concept-map</code>으로 POST 저장.<br>
+    집단 2는 해당 API를 호출하지 않아 DB에 행이 없음.</p>
+  </section>
+
+  <hr>
+
+  <!-- 8. 설문 문항 -->
+  <section>
+    <h2>8. 설문 문항</h2>
+
+    <h3>8.1 AI 요약 검토 기능 (전원, fq1–fq5)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>문항 ID</th><th>내용</th><th>측정 목적</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>fq1</code></td><td>이 기능이 AI 요약문을 더 신중하게 보게 만들었다.</td><td>자동화 편향 완화 체감</td></tr>
+          <tr><td><code>fq2</code></td><td>오류 찾기 과정이 논문 이해에 도움이 되었다.</td><td>기능 유용성</td></tr>
+          <tr><td><code>fq3</code></td><td>검토 점수가 집중하는 데 도움이 되었다.</td><td>점수 시스템 효과</td></tr>
+          <tr><td><code>fq4</code></td><td>AI 요약문 검토 기능 사용이 번거로웠다.</td><td>사용 부담</td></tr>
+          <tr><td><code>fq5</code></td><td>앞으로 논문을 읽을 때 AI 요약문 검토 기능을 사용할 의향이 있다.</td><td>실제 적용 가능성</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>8.2 개념도 구성 기능 (집단 1 한정, cq1–cq5)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>문항 ID</th><th>내용</th><th>측정 목적</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>cq1</code></td><td>개념도를 직접 구성하는 과정이 논문 이해에 도움이 됐다.</td><td>기능 유용성 체감</td></tr>
+          <tr><td><code>cq2</code></td><td>키워드를 연결하면서 개념 간 관계가 명확해졌다.</td><td>내재화 체감</td></tr>
+          <tr><td><code>cq3</code></td><td>요약문만 읽는 것보다 더 깊이 생각하게 만들었다.</td><td>능동적 조작 효과 체감</td></tr>
+          <tr><td><code>cq4</code></td><td>개념도 구성 과정이 번거로웠다.</td><td>사용 부담감</td></tr>
+          <tr><td><code>cq5</code></td><td>앞으로 논문을 읽을 때 이 방식을 계속 사용할 의향이 있다.</td><td>실제 적용 가능성</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 9. DB 스키마 -->
+  <section>
+    <h2>9. 저장 데이터 구조 (Supabase 테이블)</h2>
+
+    <h3>sessions</h3>
+    <pre><code>participant_id       TEXT        참가자 이름
+group_num            INT         1 또는 2
+paper_set            TEXT        vision / timeseries / optical
+current_step         TEXT        현재 진행 단계
+reading_completed_at TIMESTAMPTZ 논문 읽기 완료 시각
+created_at           TIMESTAMPTZ</code></pre>
+
+    <h3>filtering_responses</h3>
+    <pre><code>participant_id   TEXT
+phase            TEXT     pre / filtering / post
+sentence_id      TEXT
+error_type       TEXT     none / direction / causality / scope / limitation
+is_noise         BOOLEAN
+user_response    TEXT     accept / reject / revise / insufficient
+user_revision    TEXT     직접 수정 시 입력 텍스트
+is_correct       BOOLEAN
+score            INT
+confidence       INT      1–5
+response_time_ms INT
+timestamp        TIMESTAMPTZ</code></pre>
+
+    <h3>survey_responses</h3>
+    <pre><code>participant_id  TEXT
+question_id     TEXT     fq1–fq5 / cq1–cq5
+likert_score    INT      1–5
+timestamp       TIMESTAMPTZ</code></pre>
+
+    <h3>concept_maps</h3>
+    <pre><code>participant_id  TEXT     집단 1만 존재
+paper_set       TEXT
+node_count      INT
+edge_count      INT
+edit_count      INT
+duration_sec    INT
+graph_data      JSONB
+created_at      TIMESTAMPTZ</code></pre>
+  </section>
+
+  <hr>
+
+  <!-- 10. 점수 계산 로직 -->
+  <section>
+    <h2>10. 점수 계산 로직</h2>
+    <p>소스: <code>lib/scoring.ts → scoreResponse()</code></p>
+    <pre><code>if sentence.isNoise:
+  reject              → isCorrect = true,  score = 2
+  revise + 텍스트 있음 → isCorrect = true,  score = 3
+  나머지               → isCorrect = false, score = 0
+else:
+  accept              → isCorrect = true,  score = 1
+  나머지               → isCorrect = false, score = 0</code></pre>
+
+    <p><strong>취약 오류 유형 (weakErrorType):</strong> 각 단계에서 오답 처리된 오류 문장 중 가장 많이 틀린 유형.
+    완료 화면에서 사전 취약 유형을 참가자에게 표시.</p>
+  </section>
+
+  <hr>
+
+  <!-- 11. 결과 해석 주의사항 -->
+  <section>
+    <h2>11. 결과 해석 시 주의사항</h2>
+    <ul class="caution-list">
+      <li>
+        <div class="caution-num">1</div>
+        <div><strong>사전·사후 논문이 다름.</strong> 1차 판단(I-JEPA/TimesFM/FSO)과 2차 판단(MAE/Chronos/FSO-Perf)은 같은 도메인이지만 다른 논문. 오류 유형도 일부 다르므로 raw 점수 비교 시 문항 동질성을 확인할 것.</div>
+      </li>
+      <li>
+        <div class="caution-num">2</div>
+        <div><strong>오류 유형 구성 차이.</strong> filtering 단계에는 <code>direction</code>·<code>causality</code>가 없음. filtering 점수를 pre/post와 직접 비교하지 말 것.</div>
+      </li>
+      <li>
+        <div class="caution-num">3</div>
+        <div><strong><code>revise</code>로 최대 점수 초과 가능.</strong> 참가자가 오류 문장을 올바르게 수정하면 3점으로, 최대 점수(2점 기준) 초과. 점수율 계산 시 <code>score / maxScore &gt; 1</code>이 발생할 수 있음.</div>
+      </li>
+      <li>
+        <div class="caution-num">4</div>
+        <div><strong>집단 간 논문이 다름.</strong> 추승준(vision) / 유선호(timeseries) / 홍성민(optical)은 서로 다른 논문을 읽음. 집단 간 점수 직접 비교는 논문 난이도 차이를 통제해야 의미 있음.</div>
+      </li>
+      <li>
+        <div class="caution-num">5</div>
+        <div><strong>집단 내 비교가 핵심.</strong> 동일 참가자의 1차 → 2차 점수 변화(Δ)가 주요 분석 단위.</div>
+      </li>
+      <li>
+        <div class="caution-num">6</div>
+        <div><strong>개념도 미사용 집단 DB 행 없음.</strong> 집단 2(유선호)는 <code>concept_maps</code> 테이블에 행이 없음. JOIN 시 LEFT JOIN 사용.</div>
+      </li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 12. 데이터 내보내기 -->
+  <section>
+    <h2>12. 데이터 내보내기 (관리자 패널)</h2>
+    <p>엔드포인트: <code>/api/export?sheet=&lt;시트명&gt;</code></p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>시트명</th><th>내용</th><th>파일명</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>filtering</code></td>
+            <td>전체 판단 응답 (phase / score / confidence / responseTime 포함)</td>
+            <td>filtering_responses.csv</td>
+          </tr>
+          <tr>
+            <td><code>survey</code></td>
+            <td>설문 리커트 응답</td>
+            <td>survey_responses.csv</td>
+          </tr>
+          <tr>
+            <td><code>sessions</code></td>
+            <td>참가자별 세션 정보</td>
+            <td>sessions.csv</td>
+          </tr>
+          <tr>
+            <td><code>concept-map</code></td>
+            <td>개념도 지표 (집단 1 행만 존재)</td>
+            <td>concept_maps.csv</td>
+          </tr>
+          <tr>
+            <td><code>quiz</code></td>
+            <td>지연 퀴즈 + 메타인지 (현재 미사용)</td>
+            <td>quiz_responses.csv</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

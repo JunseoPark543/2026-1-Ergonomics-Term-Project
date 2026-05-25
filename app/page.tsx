@@ -32,21 +32,22 @@ export default function ParticipantLoginPage() {
       <div className="w-full max-w-sm rounded-xl border border-stone-200 bg-white p-8 shadow-panel">
         <h1 className="text-2xl font-bold text-ink">실험 시작</h1>
         <p className="mt-2 text-sm text-stone-600">
-          연구자에게 안내받은 이름을 입력하세요.
+          연구자에게 배정받은 참가자 번호를 입력하세요.
         </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-ink" htmlFor="pid">
-              이름
+              참가자 번호 (01~30)
             </label>
             <input
               id="pid"
               type="text"
-              maxLength={20}
+              inputMode="numeric"
+              maxLength={2}
               value={participantId}
               onChange={(e) => { setParticipantId(e.target.value); setError(""); }}
-              className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-signal"
-              placeholder="홍길동"
+              className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2 text-center text-2xl font-semibold tracking-widest focus:outline-none focus:ring-2 focus:ring-signal"
+              placeholder="01"
               autoFocus
             />
           </div>
@@ -60,7 +61,7 @@ export default function ParticipantLoginPage() {
           </button>
         </form>
         <p className="mt-6 text-center text-xs text-stone-400">
-          이미 진행 중이라면 같은 이름으로 이어서 진행됩니다.
+          이미 진행 중이라면 같은 번호로 이어서 진행됩니다.
         </p>
       </div>
     </main>

@@ -6,7 +6,7 @@ import { BookOpen, ExternalLink, ChevronRight, Network } from "lucide-react";
 import { useParticipant } from "@/components/use-participant";
 import ConceptMap, { type ConceptMapHandle } from "@/components/concept-map";
 
-const PAPER_INFO: Record<"vision" | "timeseries" | "optical", { title: string; pdfUrl: string }> = {
+const PAPER_INFO: Record<"vision" | "timeseries" | "optical" | "lp", { title: string; pdfUrl: string }> = {
   vision: {
     title: "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture (I-JEPA)",
     pdfUrl: "https://arxiv.org/pdf/2301.08243"
@@ -18,6 +18,10 @@ const PAPER_INFO: Record<"vision" | "timeseries" | "optical", { title: string; p
   optical: {
     title: "Link Budget Analysis for Free-Space Optical Satellite Networks",
     pdfUrl: "https://arxiv.org/pdf/2204.13177"
+  },
+  lp: {
+    title: "선형계획법의 해의 이동에 관한 시각화 (이상욱·임성묵·박순달, 경영과학 제19권 제1호, 2002)",
+    pdfUrl: "/papers/lp.pdf"
   }
 };
 

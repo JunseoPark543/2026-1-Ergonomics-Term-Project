@@ -849,6 +849,228 @@ const fsoPerfPost: SentenceSet = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// 선형계획법의 해의 이동에 관한 시각화  (이상욱·임성묵·박순달, 2002)
+// LP Pre  ─ 논문 개요 및 핵심 개념 (8문장 / 오류 3개)
+// ─────────────────────────────────────────────────────────────
+const lpPre: SentenceSet = {
+  phase: "pre",
+  paperSet: "lp",
+  paper: "LP 시각화 (이상욱 외, 2002)",
+  sentences: [
+    {
+      id: "lp-pre-1",
+      statement: "본 논문은 개정 심플렉스법(revised simplex method)을 이용하여 LP 알고리즘의 각 반복 단계에서의 해를 표현하고, 가능영역과 해의 동화 효과(animated effect)를 시각화한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "We used the revised simplex method for the LP algorithm. To represent the solutions at each iteration, we need the informations of feasible region and animated effect of solutions.",
+      evidencePage: 67
+    },
+    {
+      id: "lp-pre-2",
+      statement: "결정변수 벡터가 3차원을 초과하는 고차원인 경우 3차원으로의 투영(projection) 방법을 사용하여 시각화하며, 정점 수 등 원래 다면체 정보를 보존하는 기법을 연구하였다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "we used the method of projection to the three dimensions if the decision variable vector is over three dimensions, and we studied the technique of preserving original polyhedral information such as the number of vertices.",
+      evidencePage: 67
+    },
+    {
+      id: "lp-pre-3",
+      statement: "무한 가능영역(unbounded feasible region)이 존재하는 경우 선형계획법의 최적해는 반드시 존재하지 않으며, 이 논문에서는 무한 가능영역에 대한 시각화를 연구 범위에서 제외하였다.",
+      isNoise: true,
+      errorType: "direction",
+      evidenceQuote: "we studied the method of visualizing unbounded feasible region and the adjacency relationship of the vertices which is indispensable to visualize feasible region.",
+      evidencePage: 67,
+      correctedStatement: "무한 가능영역이 존재하더라도 유계 최적해가 존재할 수 있으며, 이 논문에서는 무한 가능영역의 시각화 방법을 명시적으로 연구 범위에 포함하였다.",
+      explanation: "논문의 초록은 무한 가능영역의 시각화 방법 연구를 명시적으로 기술하고 있다. 연구 범위에서 제외했다는 주장은 방향이 반전된 오류이다."
+    },
+    {
+      id: "lp-pre-4",
+      statement: "가능영역을 시각적으로 표현하기 위해서는 제약식들에 의해 만들어지는 볼록다면체의 모든 정점을 구하고, 이 정점들 간의 이웃정점(adjacent vertex) 관계를 파악하는 것이 필수적이다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "가능영역의 모든 정점을 구하고, 이 정점들 사이의 이웃관계를 찾아야 한다.",
+      evidencePage: 69
+    },
+    {
+      id: "lp-pre-5",
+      statement: "Gram-Schmidt 직교화 과정을 통해 목적함수 벡터에 수직인 좌표계를 구성하는 것이 가능영역 볼록성(convexity)을 보존하는 유일한 원인임이 이 논문에서 수학적으로 증명되었다.",
+      isNoise: true,
+      errorType: "causality",
+      evidenceQuote: "투영 과정에서 Gram-Schmidt 방법을 사용하여 기저를 구성하며, 볼록성은 선형계획법의 수학적 구조로부터 자연히 보장된다.",
+      evidencePage: 68,
+      correctedStatement: "Gram-Schmidt 직교화는 투영을 위한 좌표 변환 도구로 사용되며, 가능영역의 볼록성은 LP의 수학적 구조 자체에 의해 보장된다. 볼록성 보존의 유일한 원인으로 제시된 것이 아니다.",
+      explanation: "논문은 Gram-Schmidt를 투영 기저 구성 도구로 사용할 뿐, 이것이 볼록성 보존의 유일한 원인임을 증명하지 않는다. 인과관계를 과장한 오류이다."
+    },
+    {
+      id: "lp-pre-6",
+      statement: "이 연구에서는 이웃정점들의 인접 관계를 파악하는 방법을 연구하였으며, 이는 가능영역을 시각화하는 데 필수적인 요소이다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "the adjacency relationship of the vertices which is indispensable to visualize feasible region.",
+      evidencePage: 67
+    },
+    {
+      id: "lp-pre-7",
+      statement: "본 논문에서 제안한 시각화 방법은 결정변수의 수에 관계없이 모든 선형계획법 문제에 동일한 절차로 적용되며, 3차원 이하와 3차원 초과 문제에서 완전히 동일한 방식으로 처리된다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote: "if the decision variable vector is over three dimensions, we used the method of projection to the three dimensions.",
+      evidencePage: 67,
+      correctedStatement: "3차원 이하일 경우 직접 시각화하고, 3차원을 초과하는 경우에는 별도의 투영 방법을 적용하므로 차원에 따라 다른 절차가 사용된다.",
+      explanation: "논문은 3차원 초과 시에만 투영 방법을 적용한다고 명시하고 있다. 모든 경우에 동일한 방식을 사용한다는 주장은 범위 과장 오류이다."
+    },
+    {
+      id: "lp-pre-8",
+      statement: "속박 제약식(binding constraint)은 현재 정점에서 등호가 성립하는 제약식이며, 이를 통해 이웃정점 관계를 판별하는 데 활용된다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "속박 제약식들을 구하고, 이를 이용하여 이웃정점 관계를 파악한다.",
+      evidencePage: 69
+    }
+  ]
+};
+
+// LP Filtering  ─ 이웃정점 판별 및 시각화 단계 (6문장 / 오류 2개)
+const lpFiltering: SentenceSet = {
+  phase: "filtering",
+  paperSet: "lp",
+  paper: "LP 시각화 (이상욱 외, 2002)",
+  sentences: [
+    {
+      id: "lp-fil-1",
+      statement: "시각화 단계의 첫 번째 단계는 Mattheiss(1973)의 알고리즘을 이용하여 선형계획문제의 가능영역 내 모든 정점(vertex)을 구하는 것이다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "단계 1: Mattheiss 알고리즘을 이용하여 모든 정점을 구한다.",
+      evidencePage: 72
+    },
+    {
+      id: "lp-fil-2",
+      statement: "이 논문에서 제안한 시각화 방법은 유한 가능영역(bounded feasible region)만을 대상으로 하며, 무한 가능영역(unbounded feasible region)의 시각화는 연구 범위에서 제외되었다.",
+      isNoise: true,
+      errorType: "limitation",
+      evidenceQuote: "we studied the method of visualizing unbounded feasible region.",
+      evidencePage: 67,
+      correctedStatement: "논문의 초록에서 명시적으로 무한 가능영역의 시각화 방법을 연구하였다고 밝히고 있으므로, 무한 가능영역도 이 연구의 범위에 포함된다.",
+      explanation: "초록이 무한 가능영역의 시각화 방법 연구를 명시하고 있음에도, 연구 범위에서 제외되었다고 기술한 것은 논문이 명시한 한계를 임의로 삭제·왜곡한 오류이다."
+    },
+    {
+      id: "lp-fil-3",
+      statement: "정리 3에 의하면 n개의 변수를 갖는 선형계획문제에서 두 정점이 이웃정점이 되기 위한 조건은 두 정점이 n−1개의 속박 제약식을 공통으로 갖는 것이다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "변수의 수가 n개인 선형계획문제에서 임의의 두 정점들에 대하여 속박 제약식들의 개수가 n-1개이면, 이 정점들은 이웃정점이다.",
+      evidencePage: 71
+    },
+    {
+      id: "lp-fil-4",
+      statement: "시각화의 마지막 단계에서는 이웃정점 관계를 파악한 정점 쌍들을 선분으로 연결하여 볼록다면체(가능영역)의 구조를 시각적으로 표현한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "단계 4: 단계 3에서 구해진 정점들의 쌍을 연결한다.",
+      evidencePage: 72
+    },
+    {
+      id: "lp-fil-5",
+      statement: "정리 2는 M-문제에서 가능영역이 유한영역이면 최적해가 반드시 유일하게 존재한다는 양방향(if and only if) 동치 관계를 증명한다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote: "M-문제에 대해 최적해가 유일하면 가능영역이 유한영역이다.",
+      evidencePage: 70,
+      correctedStatement: "정리 2는 '최적해가 유일하면 가능영역이 유한영역'이라는 단방향 명제를 증명한다. 역방향(유한 가능영역 → 최적해 유일)은 정리의 내용에 포함되지 않는다.",
+      explanation: "정리 2는 단방향 함의 관계를 증명할 뿐이다. 이를 양방향 동치로 확대 해석한 것은 범위 과장 오류이다."
+    },
+    {
+      id: "lp-fil-6",
+      statement: "보조 정리 1에 의하면 임의의 선형계획문제에서 속박 제약식과 기저(basis)는 일대일 대응 관계를 갖는다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "보조정리 1: 임의의 문제의 속박 제약식과 기저는 일대일 관계에 있다.",
+      evidencePage: 71
+    }
+  ]
+};
+
+// LP Post  ─ 정리 및 시각화 예시 (8문장 / 오류 3개)
+const lpPost: SentenceSet = {
+  phase: "post",
+  paperSet: "lp",
+  paper: "LP 시각화 (이상욱 외, 2002)",
+  sentences: [
+    {
+      id: "lp-post-1",
+      statement: "논문의 결론에 따르면, 이 연구에서 개발한 시각화 방법을 통해 고차원에서 정보를 표현하는 방식과 가능영역의 표현 방법을 연구하였으며, 심플렉스법의 이해를 돕는 것이 가능하다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "이 방법을 통해서 고차원에서 정보 표현을 나타내는 방식과 가능영역의 표현을 위한 방법을 연구하고, 이를 통하여 심플렉스법의 이해를 돕는 것이 가능하다.",
+      evidencePage: 73
+    },
+    {
+      id: "lp-post-2",
+      statement: "심플렉스법의 각 반복(iteration)에서 기저(basis)가 변경되면 인접한 정점으로 이동하며, 이 이동 과정을 동화(animation) 효과로 시각화한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "각 반복 단계에서 정점 이동 과정을 동화 효과로 표현한다.",
+      evidencePage: 68
+    },
+    {
+      id: "lp-post-3",
+      statement: "논문의 결론에 따르면, 이 시각화 방법은 고차원 선형계획법 이해에 도움을 주지 못하며, 기존 심플렉스법 학습 방법보다 효과가 낮다고 평가되었다.",
+      isNoise: true,
+      errorType: "direction",
+      evidenceQuote: "심플렉스법의 이해를 돕는 것이 가능하다.",
+      evidencePage: 73,
+      correctedStatement: "논문의 결론은 이 시각화 방법이 심플렉스법의 이해를 돕는 것이 가능하다고 긍정적으로 평가하였다.",
+      explanation: "논문은 심플렉스법 이해에 도움이 된다고 긍정적으로 결론짓는다. 효과가 낮다는 주장은 방향이 반전된 오류이다."
+    },
+    {
+      id: "lp-post-4",
+      statement: "정리 1에 의하면 선형계획문제의 가능영역이 무한영역인 경우, 보조 문제에 1번 옆의 점 C를 추가하여 해당 점을 기준으로 무한 가능영역의 구조를 파악한다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "정리 1: 주어진 문제의 가능영역이 무한영역이면 1번 옆의 점(C)이 문제의 해이다.",
+      evidencePage: 70
+    },
+    {
+      id: "lp-post-5",
+      statement: "이 논문에서 Mattheiss(1973)의 알고리즘을 사용하여 모든 정점을 구하는 것이 이웃정점 판별의 유일한 원인이며, 이 알고리즘 없이는 어떠한 이웃정점 판별도 수행할 수 없음이 증명되었다.",
+      isNoise: true,
+      errorType: "causality",
+      evidenceQuote: "가능영역의 모든 정점을 찾기 위하여 Mattheiss 알고리즘을 사용하였다.",
+      evidencePage: 69,
+      correctedStatement: "Mattheiss 알고리즘은 모든 정점을 구하는 방법으로 활용된 것이며, 이웃정점 판별은 정점을 구한 후 정리 3의 조건을 별도로 적용하여 이루어진다. 유일한 원인임을 증명한 것이 아니다.",
+      explanation: "정점 탐색과 이웃정점 판별은 별개의 단계이다. Mattheiss 알고리즘이 이웃정점 판별의 유일한 원인이라거나 다른 방법이 불가능하다고 증명된 것은 아니므로 인과관계 오류이다."
+    },
+    {
+      id: "lp-post-6",
+      statement: "예제 2에서는 최소화(minimization) 목적함수를 갖는 선형계획문제를 다루며, 이를 통해 최소화 문제에서도 해의 이동 과정을 시각화할 수 있음을 보여준다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "예제 2: min 목적함수를 갖는 문제에 대한 결과.",
+      evidencePage: 73
+    },
+    {
+      id: "lp-post-7",
+      statement: "이 연구에서 개발된 시각화 방법은 정수계획법(integer programming), 이차계획법(quadratic programming) 등 모든 수리계획법 문제에도 동일하게 적용 가능함을 결론에서 명시적으로 주장하였다.",
+      isNoise: true,
+      errorType: "scope",
+      evidenceQuote: "결론에서는 선형계획법 시각화 연구 성과를 제시하며, 다른 수리계획법으로의 확장은 명시적으로 언급하지 않는다.",
+      evidencePage: 73,
+      correctedStatement: "이 연구는 선형계획법(LP)의 시각화에 특화된 것이며, 정수계획법이나 이차계획법으로의 확장이 가능함을 결론에서 명시적으로 주장하지 않는다.",
+      explanation: "결론은 LP 시각화 연구 성과만을 서술하며, 다른 수리계획법으로의 일반화를 주장하지 않는다. 범위를 확대 해석한 오류이다."
+    },
+    {
+      id: "lp-post-8",
+      statement: "이 연구는 심플렉스법의 각 반복 과정에서 정점이 이동하는 경로를 그래픽으로 표현하여, 고차원 선형계획법의 알고리즘 동작을 직관적으로 이해할 수 있도록 하였다.",
+      isNoise: false,
+      errorType: "none",
+      evidenceQuote: "이를 통하여 심플렉스법의 이해를 돕는 것이 가능하다.",
+      evidencePage: 73
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
 // 인덱스
 // ─────────────────────────────────────────────────────────────
 export const sentenceSets: SentenceSet[] = [
@@ -860,11 +1082,14 @@ export const sentenceSets: SentenceSet[] = [
   chronosPost,
   fsoPre,
   fsoFiltering,
-  fsoPerfPost
+  fsoPerfPost,
+  lpPre,
+  lpFiltering,
+  lpPost
 ];
 
 export function getSentenceSet(
-  paperSet: "vision" | "timeseries" | "optical",
+  paperSet: "vision" | "timeseries" | "optical" | "lp",
   phase: "pre" | "filtering" | "post"
 ): SentenceSet {
   const set = sentenceSets.find((s) => s.paperSet === paperSet && s.phase === phase);
