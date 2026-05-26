@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getFilteringResponses, getSurveyResponses, getAllSessions, getQuizResponses, getConceptMaps, getMetacognition } from "@/lib/db";
+import { getFilteringResponses, getSurveyResponses, getAllSessions, getConceptMaps } from "@/lib/db";
 import { errorTypeLabel } from "@/lib/scoring";
 import { getResearcherUser } from "@/lib/api-auth";
 
@@ -57,24 +57,6 @@ export async function GET(request: NextRequest) {
       s.currentStep, s.createdAt
     ]);
     return csv(toCsv([headers, ...rows]), "sessions.csv");
-  }
-
-  if (sheet === "quiz") {
-    const headers = ["사용자번호", "논문세트", "문항ID", "문항유형", "응답내용", "정답여부", "자동점수", "수동점수", "타임스탬프"];
-    const data = await getQuizResponses();
-    const rows = data.map((r) => [
-      r.participantId, r.paperSet, r.questionId,
-      r.questionType === "recognition" ? "재인" : r.questionType === "recall" ? "회상" : "응용",
-      r.answer,
-      r.isCorrect == null ? "" : r.isCorrect ? "정답" : "오답",
-      String(r.autoScore ?? ""),
-      String(r.manualScore ?? ""),
-      r.createdAt
-    ]);
-    const mcData = await getMetacognition();
-    const mcHeaders = ["사용자번호", "논문세트", "기억비율", "예상점수", "타임스탬프"];
-    const mcRows = mcData.map((m) => [m.participantId, m.paperSet, String(m.memoryPercent), String(m.expectedScore), m.createdAt]);
-    return csv(toCsv([headers, ...rows]) + "\n\n메타인지\n" + toCsv([mcHeaders, ...mcRows]), "quiz_responses.csv");
   }
 
   if (sheet === "concept-map") {

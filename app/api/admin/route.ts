@@ -5,9 +5,7 @@ import {
   deleteParticipantResponses,
   resetAllData,
   getAllSessions,
-  getConceptMaps,
-  getQuizResponses,
-  getMetacognition
+  getConceptMaps
 } from "@/lib/db";
 import { getResearcherUser } from "@/lib/api-auth";
 import type { Session } from "@/lib/schemas";
@@ -18,8 +16,6 @@ export async function GET(request: NextRequest) {
 
   const resource = new URL(request.url).searchParams.get("resource");
   if (resource === "concept-maps") return NextResponse.json(await getConceptMaps());
-  if (resource === "quiz-responses") return NextResponse.json(await getQuizResponses());
-  if (resource === "metacognition") return NextResponse.json(await getMetacognition());
   return NextResponse.json({ error: "unknown resource" }, { status: 400 });
 }
 
