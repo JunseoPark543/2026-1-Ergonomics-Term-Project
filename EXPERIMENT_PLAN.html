@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>실험 통계 계획서</title>
+  <title>실험 통계 계획서 (개정판)</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -132,17 +132,38 @@
     .af-content strong { display: block; margin-bottom: 3px; }
     .af-content p { font-size: 13px; color: #57534e; margin: 0; }
 
+    /* 실험 흐름 타임라인 */
+    .timeline {
+      display: flex; align-items: stretch; gap: 0;
+      margin: 18px 0; overflow-x: auto;
+    }
+    .tl-item {
+      flex: 1; min-width: 110px;
+      border: 1px solid #e7e5e4; border-right: none;
+      background: #fff; padding: 12px 10px;
+      text-align: center; font-size: 12px;
+    }
+    .tl-item:first-child { border-radius: 8px 0 0 8px; }
+    .tl-item:last-child  { border-right: 1px solid #e7e5e4; border-radius: 0 8px 8px 0; }
+    .tl-item.highlight   { background: #f0fdf4; border-color: #4d7c0f; }
+    .tl-item .tl-time    { font-size: 10px; color: #a8a29e; margin-bottom: 4px; }
+    .tl-item .tl-label   { font-weight: 700; color: #1c1917; margin-bottom: 3px; }
+    .tl-arrow {
+      display: flex; align-items: center;
+      color: #a8a29e; font-size: 18px; padding: 0 2px;
+    }
+
     /* 설계 도식 */
     .design-matrix {
       border: 1px solid #e7e5e4; border-radius: 10px; overflow: hidden; margin: 14px 0;
     }
     .dm-header {
       background: #1c1917; color: #fafaf9;
-      display: grid; grid-template-columns: 180px 1fr 1fr 1fr;
+      display: grid; grid-template-columns: 200px 1fr 1fr 1fr;
       font-size: 13px; font-weight: 600;
     }
     .dm-row {
-      display: grid; grid-template-columns: 180px 1fr 1fr 1fr;
+      display: grid; grid-template-columns: 200px 1fr 1fr 1fr;
       border-top: 1px solid #e7e5e4; font-size: 13px;
     }
     .dm-row:nth-child(even) { background: #f5f5f4; }
@@ -185,7 +206,7 @@
 
     @media (max-width: 640px) {
       .hypo-grid { grid-template-columns: 1fr; }
-      .dm-header, .dm-row { grid-template-columns: 120px 1fr 1fr 1fr; font-size: 12px; }
+      .dm-header, .dm-row { grid-template-columns: 130px 1fr 1fr 1fr; font-size: 12px; }
     }
   </style>
 </head>
@@ -193,8 +214,18 @@
 <div class="wrapper">
 
   <div class="doc-header">
-    <h1>실험 통계 계획서</h1>
-    <div class="doc-meta">생성일: 2026-05-24 &nbsp;·&nbsp; AI 요약문 오류 탐지 능력에 대한 개입 효과 측정</div>
+    <h1>실험 통계 계획서 <span style="font-size:16px;font-weight:400;color:#78716c;">(개정판)</span></h1>
+    <div class="doc-meta">
+      최초 작성: 2026-05-24 &nbsp;·&nbsp; 개정: 2026-05-26 &nbsp;·&nbsp;
+      개정 사유: 팀 피드백 반영 — 설계 단순화, 24h 지연 퀴즈 추가, t-test 중심 전환
+    </div>
+  </div>
+
+  <div class="callout callout-warning">
+    <strong>개정 배경 (팀 피드백 요약)</strong><br>
+    ① 논문 통일 필요 — 논문마다 배경지식·난이도가 달라 혼입변인 발생 가능성이 큼<br>
+    ② 참가자 최소 30명 — CLT 적용 및 정규분포 가정을 위한 최소 요건<br>
+    ③ 설계 단순화 — A그룹(AI 요약 읽기) vs B그룹(지식 구조화 캔버스), 즉시 퀴즈 + 24h 지연 퀴즈
   </div>
 
 
@@ -202,40 +233,80 @@
   <section>
     <h2>1. 실험 설계 개요</h2>
 
-    <p>본 실험은 <strong>2(개념도 조건: 유/무) × 2(시점: 사전/사후)</strong> 혼합 설계(Mixed Design)를 채택한다.</p>
+    <p>본 실험은 <strong>순수 집단 간 설계(Between-subjects)</strong>를 채택한다.
+    두 집단에 서로 다른 읽기 보조 조건을 부여하고, 즉시 및 지연 이해도 퀴즈 점수로 효과를 비교한다.</p>
 
-    <div class="design-matrix">
-      <div class="dm-header">
-        <div class="dm-cell"></div>
-        <div class="dm-cell">1차 판단 (pre)</div>
-        <div class="dm-cell">AI 요약 검토 (filtering)</div>
-        <div class="dm-cell">2차 판단 (post)</div>
+    <h3>독립변수 (IV)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>집단</th><th>읽기 조건</th><th>조작 내용</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>A그룹 (n=15)</strong><br><span class="badge badge-blue">AI 요약 조건</span></td>
+            <td>AI 요약문 제공 후 읽기</td>
+            <td>논문 읽기 전/중에 AI가 생성한 핵심 요약문을 참고할 수 있음. 수동적 정보 수용.</td>
+          </tr>
+          <tr>
+            <td><strong>B그룹 (n=15)</strong><br><span class="badge badge-green">개념도 조건</span></td>
+            <td>지식 구조화 캔버스 사용</td>
+            <td>논문을 읽으면서 직접 키워드와 관계를 노드-엣지 형태로 구성. 능동적 지식 내재화.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>종속변수 (DV)</h3>
+    <ul>
+      <li><strong>즉시 이해도 퀴즈 점수</strong> (T1): 읽기 직후 측정</li>
+      <li><strong>지연 이해도 퀴즈 점수</strong> (T2): 24시간 후 측정 — 장기 파지(retention) 반영</li>
+      <li><strong>판단 확신도</strong>: 1–5 Likert, 문항별 측정</li>
+      <li><strong>설문 리커트 점수</strong>: 주관적 유용성·부담감</li>
+    </ul>
+
+    <h3>실험 흐름</h3>
+    <div class="timeline">
+      <div class="tl-item highlight">
+        <div class="tl-time">Day 1</div>
+        <div class="tl-label">참가자 안내</div>
+        <div>실험 절차·동의</div>
       </div>
-      <div class="dm-row">
-        <div class="dm-cell"><strong>집단 1</strong><br><span style="font-size:12px;color:#78716c;">개념도 O (n=15)</span></div>
-        <div class="dm-cell">피드백 없음<br>점수 측정</div>
-        <div class="dm-cell">피드백 + 개념도<br>점수 측정</div>
-        <div class="dm-cell">피드백 없음<br>점수 측정</div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-item highlight">
+        <div class="tl-time">Day 1</div>
+        <div class="tl-label">논문 읽기</div>
+        <div>A: AI 요약 참고<br>B: 개념도 구성</div>
       </div>
-      <div class="dm-row">
-        <div class="dm-cell"><strong>집단 2</strong><br><span style="font-size:12px;color:#78716c;">개념도 X (n=15)</span></div>
-        <div class="dm-cell">피드백 없음<br>점수 측정</div>
-        <div class="dm-cell">피드백만<br>점수 측정</div>
-        <div class="dm-cell">피드백 없음<br>점수 측정</div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-item highlight">
+        <div class="tl-time">Day 1</div>
+        <div class="tl-label">즉시 퀴즈 (T1)</div>
+        <div>이해도 측정<br>+ 확신도</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-item">
+        <div class="tl-time">~24시간 대기</div>
+        <div class="tl-label">인터벌</div>
+        <div>논문 재참조 금지</div>
+      </div>
+      <div class="tl-arrow">→</div>
+      <div class="tl-item highlight">
+        <div class="tl-time">Day 2</div>
+        <div class="tl-label">지연 퀴즈 (T2)</div>
+        <div>파지 측정<br>+ 설문</div>
       </div>
     </div>
 
-    <ul>
-      <li><strong>집단 간 요인 (Between-subjects):</strong> 개념도 조건 (집단 1 vs 집단 2)</li>
-      <li><strong>집단 내 요인 (Within-subjects):</strong> 시점 (pre vs post)</li>
-      <li><strong>논문 통일:</strong> 모든 참가자가 동일 논문 세트 사용 — 논문 난이도 혼입 제거</li>
-      <li><strong>무선 배정:</strong> 참가자를 집단 1/2에 교대 배정 (가입 순서 홀수=집단1, 짝수=집단2)</li>
-    </ul>
+    <div class="callout callout-info">
+      <strong>논문 통일 이유:</strong> 선형계획법 논문(이상욱 외, 2002) 한 편을 사용한다.
+      OR1 수강자를 대상으로 하면 배경지식이 균일해지고, 논문 난이도 차이라는 혼입변인을 제거할 수 있다.
+      논문 선택 혼입 = 제거됨. 집단 배정만이 유일한 조작.
+    </div>
 
     <div class="callout callout-warning">
-      <strong>논문 통일의 이유:</strong> 기존 설계(vision/timeseries/optical 분리)는 논문 난이도가 다르기 때문에
-      집단 간 점수 차이가 개념도 효과인지 논문 난이도 차이인지 구분할 수 없다.
-      단일 논문으로 통일하면 이 혼입변인(confound)이 제거된다.
+      <strong>24시간 지연 퀴즈 운영 방안:</strong>
+      참가자에게 링크+번호를 미리 안내하고 D+1에 직접 접속하게 하거나,
+      실험자가 카카오톡/문자로 D+1 알림 후 같은 번호로 로그인하여 2차 세션에 접속하도록 한다.
+      시스템에 24h 잠금(T2 버튼 비활성화)을 추가하면 조기 접근을 막을 수 있다.
     </div>
   </section>
 
@@ -245,53 +316,63 @@
   <section>
     <h2>2. 최소 표본 수 결정</h2>
 
-    <h3>정규분포 가정 성립 조건</h3>
-    <p>중심극한정리(CLT)에 의해 집단 내 <strong>n ≥ 15</strong>이면 표본 평균의 표집분포가 정규분포에 근사한다.
-    혼합 설계 ANOVA에서는 집단당 최소 15명이 일반적 권고 하한선이다.</p>
+    <h3>CLT 기준 정규분포 가정</h3>
+    <p>중심극한정리(CLT)에 의해 집단 내 <strong>n ≥ 30</strong>이면 표본 평균 분포가 정규분포에 근사한다.
+    그러나 독립 t-검정에서 집단 내 정규성을 따로 확인하므로 집단당 최소 15명이 실질적 권고 하한선이다.</p>
 
-    <h3>검정력 분석 (G*Power 기준)</h3>
+    <h3>검정력 분석 (G*Power: 독립 t-검정 기준)</h3>
     <ul>
-      <li>유의수준 α = 0.05</li>
+      <li>유의수준 α = 0.05 (양측)</li>
       <li>목표 검정력 1−β = 0.80</li>
-      <li>효과 크기 Cohen's f = 0.25 (중간 효과, 사회과학 관례)</li>
-      <li>반복 측정 간 상관 ρ = 0.50 (보수적 추정)</li>
-      <li>집단 수 = 2, 측정 시점 수 = 2</li>
+      <li>효과 크기 Cohen's d = 0.50 (중간 효과, 인지·교육 분야 관례)</li>
+      <li>집단 수 = 2 (동등 집단 크기)</li>
     </ul>
 
     <div class="power-bar-wrap">
-      <div class="power-bar-label"><span>n=10/집단 (총 20)</span><span>검정력 ≈ 0.52</span></div>
-      <div class="power-bar-track"><div class="power-bar-fill" style="width:52%"></div></div>
+      <div class="power-bar-label"><span>n=10/집단 (총 20)</span><span>검정력 ≈ 0.46</span></div>
+      <div class="power-bar-track"><div class="power-bar-fill" style="width:46%"></div></div>
     </div>
     <div class="power-bar-wrap">
-      <div class="power-bar-label"><span>n=15/집단 (총 30) ← 채택</span><span>검정력 ≈ 0.80</span></div>
+      <div class="power-bar-label"><span>n=15/집단 (총 30) ← 최소 채택</span><span>검정력 ≈ 0.62</span></div>
+      <div class="power-bar-track"><div class="power-bar-fill" style="width:62%"></div></div>
+    </div>
+    <div class="power-bar-wrap">
+      <div class="power-bar-label"><span>n=20/집단 (총 40) ← 권장</span><span>검정력 ≈ 0.80</span></div>
       <div class="power-bar-track"><div class="power-bar-fill" style="width:80%"></div></div>
     </div>
     <div class="power-bar-wrap">
-      <div class="power-bar-label"><span>n=20/집단 (총 40)</span><span>검정력 ≈ 0.92</span></div>
+      <div class="power-bar-label"><span>n=26/집단 (총 52)</span><span>검정력 ≈ 0.92</span></div>
       <div class="power-bar-track"><div class="power-bar-fill" style="width:92%"></div></div>
     </div>
 
     <div class="sample-vis">
       <div class="sample-group">
-        <div class="sg-label">집단 1 (개념도 O)</div>
+        <div class="sg-label">A그룹 (AI 요약)</div>
         <div class="sg-n">15</div>
-        <div class="sg-sub">명 이상</div>
+        <div class="sg-sub">명 이상 (최소)</div>
       </div>
       <div class="sample-group">
-        <div class="sg-label">집단 2 (개념도 X)</div>
+        <div class="sg-label">B그룹 (개념도)</div>
         <div class="sg-n">15</div>
-        <div class="sg-sub">명 이상</div>
+        <div class="sg-sub">명 이상 (최소)</div>
       </div>
       <div class="sample-group" style="border-color:#4d7c0f;">
         <div class="sg-label">총 최소 표본</div>
         <div class="sg-n" style="color:#4d7c0f;">30</div>
-        <div class="sg-sub">명 (검정력 0.80 보장)</div>
+        <div class="sg-sub">명 (검정력 ≈ 0.62)</div>
       </div>
     </div>
 
+    <div class="callout callout-warning">
+      <strong>검정력 주의:</strong> 집단당 n=15이면 독립 t-검정의 검정력이 0.62로 낮다.
+      시간이 허용된다면 <strong>집단당 20명(총 40명)</strong> 모집이 권장된다(검정력 0.80 달성).
+      현실적으로 n=30이 한계라면, 24h 지연 퀴즈를 포함한 반복 측정(paired t-test) 분석을 병행하여
+      검정력을 보완할 수 있다.
+    </div>
+
     <div class="callout callout-info">
-      탈락·결측 대비 10% 여유를 두어 <strong>집단당 17명, 총 34명</strong> 모집을 권장한다.
-      정규성 가정 위반 시 비모수 검정으로 전환한다(§6 참조).
+      탈락·결측 대비 10~15% 여유를 두어 <strong>집단당 17명, 총 34명</strong> 모집을 권장한다.
+      시스템 번호 체계: 01~17 = A그룹, 18~34 = B그룹, 또는 홀수=A그룹, 짝수=B그룹.
     </div>
   </section>
 
@@ -301,54 +382,71 @@
   <section>
     <h2>3. 귀무가설 및 대립가설</h2>
 
-    <p>점수는 <strong>정답률(%)</strong>로 표준화한다: <code>score_rate = (획득점수 / 최대점수) × 100</code></p>
-    <p>주요 분석 지표는 <strong>Δ = post_rate − pre_rate</strong> (사전→사후 개선량)이다.</p>
+    <p>종속변수는 <strong>이해도 퀴즈 정답률(%)</strong>이다:
+    <code>score(%) = (획득점수 / 최대점수) × 100</code></p>
+    <p>핵심 비교 지표: <strong>즉시 퀴즈(T1)</strong> 및 <strong>지연 퀴즈(T2)</strong> 점수 집단 간 차이.</p>
 
-    <h3>H1 — 필터링 인터페이스 효과 (전원 대상)</h3>
+    <h3>H1 — 즉시 이해도: 개념도 vs AI 요약</h3>
     <div class="hypo-grid">
       <div class="hypo-card h0">
         <div class="hypo-tag">귀무가설 H0₁</div>
-        <div class="hypo-label">사전-사후 점수 변화 없음</div>
-        <p>μ<sub>post</sub> = μ<sub>pre</sub><br>
-        AI 요약 검토 개입은 오류 탐지 점수에 유의한 변화를 일으키지 않는다.</p>
+        <div class="hypo-label">즉시 퀴즈 점수: 집단 간 차이 없음</div>
+        <p>μ<sub>T1,B</sub> = μ<sub>T1,A</sub><br>
+        개념도 조건과 AI 요약 조건 간 즉시 이해도 퀴즈 점수에 유의한 차이가 없다.</p>
       </div>
       <div class="hypo-card h1">
-        <div class="hypo-tag">대립가설 H1₁</div>
-        <div class="hypo-label">사후 점수가 사전보다 높음 (단측)</div>
-        <p>μ<sub>post</sub> &gt; μ<sub>pre</sub><br>
-        AI 요약 검토 개입 후 오류 탐지 점수가 유의하게 향상된다.</p>
+        <div class="hypo-tag">대립가설 H1₁ <span class="badge badge-purple" style="margin-left:6px;">핵심</span></div>
+        <div class="hypo-label">개념도 집단의 즉시 점수가 더 높음</div>
+        <p>μ<sub>T1,B</sub> &gt; μ<sub>T1,A</sub><br>
+        능동적 지식 구조화가 수동적 AI 요약 읽기보다 즉각적 이해를 촉진한다.</p>
       </div>
     </div>
 
-    <h3>H2 — 개념도 도구 효과 (집단 간 상호작용)</h3>
+    <h3>H2 — 장기 파지: 24시간 후 보유율 (핵심 가설)</h3>
     <div class="hypo-grid">
       <div class="hypo-card h0">
         <div class="hypo-tag">귀무가설 H0₂ <span class="badge badge-purple" style="margin-left:6px;">핵심</span></div>
-        <div class="hypo-label">집단 × 시점 상호작용 없음</div>
-        <p>(μ<sub>post,G1</sub> − μ<sub>pre,G1</sub>) = (μ<sub>post,G2</sub> − μ<sub>pre,G2</sub>)<br>
-        개념도 유무와 관계없이 사전→사후 개선량은 동일하다.</p>
+        <div class="hypo-label">지연 퀴즈 점수: 집단 간 차이 없음</div>
+        <p>μ<sub>T2,B</sub> = μ<sub>T2,A</sub><br>
+        24시간 후 장기 파지 점수에 집단 간 유의한 차이가 없다.</p>
       </div>
       <div class="hypo-card h1">
         <div class="hypo-tag">대립가설 H1₂</div>
-        <div class="hypo-label">집단 1의 개선량이 더 큼 (단측)</div>
-        <p>Δ<sub>G1</sub> &gt; Δ<sub>G2</sub><br>
-        개념도를 사용한 집단이 사용하지 않은 집단보다 더 크게 향상된다.</p>
+        <div class="hypo-label">개념도 집단의 지연 점수가 더 높음</div>
+        <p>μ<sub>T2,B</sub> &gt; μ<sub>T2,A</sub><br>
+        능동적 지식 구조화는 AI 요약 읽기보다 장기 기억 파지에 유리하다.</p>
       </div>
     </div>
 
-    <h3>H3 — 개념도 복잡도와 학습 효과 (탐색적)</h3>
+    <h3>H3 — 파지율 감소폭: 망각 속도 비교 (탐색적)</h3>
     <div class="hypo-grid">
       <div class="hypo-card h0">
         <div class="hypo-tag">귀무가설 H0₃</div>
-        <div class="hypo-label">개념도 복잡도와 개선량 무상관</div>
-        <p>ρ(노드 수, Δ) = 0<br>
-        개념도의 정교성(노드·연결 수)은 점수 개선량과 관련이 없다.</p>
+        <div class="hypo-label">T1→T2 점수 감소폭: 집단 간 차이 없음</div>
+        <p>(μ<sub>T1,B</sub> − μ<sub>T2,B</sub>) = (μ<sub>T1,A</sub> − μ<sub>T2,A</sub>)<br>
+        두 집단의 망각 속도(파지율 감소)에 유의한 차이가 없다.</p>
       </div>
       <div class="hypo-card h1">
         <div class="hypo-tag">대립가설 H1₃</div>
-        <div class="hypo-label">복잡도↑ → 개선량↑ (양측)</div>
-        <p>ρ(노드 수, Δ) ≠ 0<br>
-        개념도를 더 정교하게 작성한 참가자일수록 점수 개선량이 크다.</p>
+        <div class="hypo-label">개념도 집단의 망각이 더 느림</div>
+        <p>Δ<sub>B</sub> &lt; Δ<sub>A</sub> &nbsp;(Δ = T1 − T2)<br>
+        개념도 조건이 AI 요약 조건보다 망각이 적다.</p>
+      </div>
+    </div>
+
+    <h3>H4 — 개념도 복잡도와 학습 효과 (탐색적, B그룹 한정)</h3>
+    <div class="hypo-grid">
+      <div class="hypo-card h0">
+        <div class="hypo-tag">귀무가설 H0₄</div>
+        <div class="hypo-label">개념도 정교성과 퀴즈 점수 무상관</div>
+        <p>ρ(노드 수, T2) = 0<br>
+        개념도를 더 정교하게 구성했더라도 지연 퀴즈 점수와 관련이 없다.</p>
+      </div>
+      <div class="hypo-card h1">
+        <div class="hypo-tag">대립가설 H1₄</div>
+        <div class="hypo-label">복잡도↑ → 지연 점수↑</div>
+        <p>ρ(노드 수, T2) &gt; 0<br>
+        정교한 개념도를 구성한 참가자일수록 장기 파지 점수가 높다.</p>
       </div>
     </div>
   </section>
@@ -362,40 +460,52 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>가설</th><th>검정</th><th>유의수준 α</th><th>근거</th></tr>
+          <tr><th>가설</th><th>검정 방법</th><th>유의수준 α</th><th>방향</th><th>근거</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td>H0₁ (필터링 효과)</td>
-            <td>대응 t-검정 (단측)</td>
-            <td><strong>0.05</strong></td>
-            <td>주요 가설, 단측 검정</td>
+            <td>H0₁ (즉시 이해도)</td>
+            <td>독립 t-검정</td>
+            <td><strong>0.025</strong></td>
+            <td>단측</td>
+            <td>방향성 명확 (개념도 > AI 요약), Bonferroni 2개 주 가설 교정</td>
           </tr>
           <tr>
-            <td>H0₂ (상호작용)</td>
-            <td>혼합 ANOVA → 단순 효과</td>
-            <td><strong>0.05</strong></td>
-            <td>핵심 가설</td>
+            <td>H0₂ (지연 파지)</td>
+            <td>독립 t-검정</td>
+            <td><strong>0.025</strong></td>
+            <td>단측</td>
+            <td>핵심 가설, 동일 교정</td>
           </tr>
           <tr>
-            <td>H0₃ (복잡도 상관)</td>
-            <td>Pearson r (집단 1 only)</td>
+            <td>H0₃ (망각 속도)</td>
+            <td>독립 t-검정</td>
             <td><strong>0.05</strong></td>
-            <td>탐색적, 단일 검정</td>
+            <td>단측</td>
+            <td>탐색적, 교정 미적용</td>
           </tr>
           <tr>
-            <td>사후 다중 비교</td>
-            <td>Bonferroni 교정</td>
-            <td><strong>0.05 / k</strong></td>
-            <td>검정 수(k)에 따라 교정</td>
+            <td>H0₄ (복잡도 상관)</td>
+            <td>Pearson/Spearman r</td>
+            <td><strong>0.05</strong></td>
+            <td>양측</td>
+            <td>탐색적, B그룹 단독</td>
+          </tr>
+          <tr>
+            <td>반복 측정 보조 분석</td>
+            <td>대응 t-검정 (각 집단 내)</td>
+            <td><strong>0.05</strong></td>
+            <td>단측</td>
+            <td>T1→T2 변화 확인 (집단 내)</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="callout callout-info">
-      <strong>단측 vs 양측:</strong> H0₁과 H0₂는 방향성 예측이 명확하므로 단측 검정(one-tailed) 적용.
-      H0₃는 방향 불확실(정교한 개념도가 오히려 부담일 수 있음)하므로 양측 검정.
+      <strong>Bonferroni 교정 적용 범위:</strong> 주요 가설 H0₁과 H0₂는 동일 참가자에서 수집된 두 측정치를
+      각각 검정하므로 패밀리와이즈 오류율 제어를 위해 α = 0.05/2 = 0.025를 적용한다.
+      탐색적 가설(H0₃, H0₄)은 교정 없이 α = 0.05를 유지하고 결과 해석 시 탐색적 성격임을 명시한다.
     </div>
   </section>
 
@@ -407,13 +517,55 @@
 
     <h3>주요 종속변수 (Primary DVs)</h3>
     <div class="formula-box">
-score_rate(%) = (획득점수 / 최대점수) × 100<br>
-&nbsp;&nbsp;최대점수: pre/post = 11점, filtering = 8점<br><br>
-Δ = post_rate − pre_rate &nbsp;&nbsp;← 핵심 분석 단위<br>
-improvement_ratio = Δ / (100 − pre_rate) &nbsp;&nbsp;← 개선 여지 대비 실제 개선
+T1_rate(%) = (즉시 퀴즈 점수 / 최대 점수) × 100<br>
+T2_rate(%) = (지연 퀴즈 점수 / 최대 점수) × 100<br><br>
+retention_drop = T1_rate − T2_rate &nbsp;&nbsp;← 망각량 (작을수록 파지 우수)<br>
+retention_ratio = T2_rate / T1_rate × 100 &nbsp;&nbsp;← 파지율 (높을수록 우수)
     </div>
 
-    <h3>보조 종속변수 (Secondary DVs)</h3>
+    <h3>퀴즈 구성 (예시)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>문항 유형</th><th>수</th><th>점수</th><th>설명</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>재인 (Recognition)</td>
+            <td>4문항</td>
+            <td>4점</td>
+            <td>4지 선다형, 논문 핵심 개념 확인</td>
+          </tr>
+          <tr>
+            <td>회상 (Recall)</td>
+            <td>3문항</td>
+            <td>0–9점</td>
+            <td>단답/서술, 루브릭 채점 (0–3점/문항)</td>
+          </tr>
+          <tr>
+            <td>적용 (Application)</td>
+            <td>1문항</td>
+            <td>0–3점</td>
+            <td>논문 개념을 새로운 맥락에 적용</td>
+          </tr>
+          <tr style="font-weight:700;">
+            <td>합계</td>
+            <td>8문항</td>
+            <td>16점 만점</td>
+            <td>T1, T2 동일 문항 또는 동형 문항 사용</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warning">
+      <strong>T1/T2 동일 vs 동형 문항:</strong>
+      동일 문항을 쓰면 기억 연습 효과(testing effect)로 T2 점수가 올라가는 편향이 생긴다.
+      가능하면 동형 문항(parallel forms)을 구성하는 것이 이상적이다.
+      시간 제약이 있으면 동일 문항을 쓰되 이 한계점을 논문에 명시한다.
+    </div>
+
+    <h3>보조 측정변수 (Secondary DVs)</h3>
     <div class="table-wrap">
       <table>
         <thead>
@@ -422,38 +574,26 @@ improvement_ratio = Δ / (100 − pre_rate) &nbsp;&nbsp;← 개선 여지 대비
         <tbody>
           <tr>
             <td>판단 확신도 (confidence)</td>
-            <td>1–5 Likert, 문장별 측정</td>
-            <td>확신도-정확성 보정 (calibration) 분석</td>
+            <td>1–5 Likert, 문항별</td>
+            <td>Overconfidence index — 자동화 편향 탐색</td>
           </tr>
           <tr>
-            <td>응답 시간 (ms)</td>
-            <td>문장 노출 ~ 제출 버튼 클릭</td>
-            <td>pre→post 처리 효율 변화</td>
-          </tr>
-          <tr>
-            <td>오류 유형별 탐지율</td>
-            <td>direction / causality / scope / limitation 별 정답률</td>
-            <td>어떤 오류가 더 취약한지</td>
-          </tr>
-          <tr>
-            <td>개념도 복잡도 (집단 1)</td>
-            <td>노드 수, 엣지 수, 수정 횟수, 소요 시간</td>
-            <td>Δ와의 상관 (H0₃)</td>
-          </tr>
-          <tr>
-            <td>설문 리커트 (fq1–5, cq1–5)</td>
-            <td>5점 Likert × 5–10문항</td>
+            <td>설문 리커트</td>
+            <td>5점 Likert × 5문항 (집단별 맞춤)</td>
             <td>주관적 유용성·부담감 기술통계</td>
+          </tr>
+          <tr>
+            <td>개념도 복잡도 (B그룹)</td>
+            <td>노드 수, 엣지 수, 수정 횟수, 소요 시간</td>
+            <td>T2 점수와의 상관 (H0₄)</td>
+          </tr>
+          <tr>
+            <td>읽기 소요 시간</td>
+            <td>논문 읽기 시작 ~ 완료 버튼 클릭</td>
+            <td>집단 간 읽기 시간 균형 확인 (혼입 검증)</td>
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <h3>확신도-정확성 보정 지수 (Calibration)</h3>
-    <div class="formula-box">
-overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<br>
-&nbsp;&nbsp;양수: 틀렸을 때 더 확신 → 자동화 편향 의심<br>
-&nbsp;&nbsp;0에 가까울수록 보정 양호
     </div>
   </section>
 
@@ -469,17 +609,18 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
         <div class="af-num">1</div>
         <div class="af-content">
           <strong>기술통계 (Descriptive Statistics)</strong>
-          <p>집단별·시점별 score_rate의 평균, 표준편차, 95% 신뢰구간 산출.
-          박스플롯으로 분포 확인. 천장/바닥 효과(ceiling/floor effect) 점검.</p>
+          <p>집단별 T1/T2 score_rate의 평균, 표준편차, 95% 신뢰구간 산출.
+          박스플롯 및 히스토그램으로 분포 확인. 천장/바닥 효과 점검.
+          두 집단의 읽기 소요 시간이 유의하게 다르지 않은지 확인(조작 검증).</p>
         </div>
       </div>
 
       <div class="af-step">
         <div class="af-num">2</div>
         <div class="af-content">
-          <strong>정규성 검정 (Normality Test)</strong>
-          <p><strong>Shapiro-Wilk 검정</strong> (n &lt; 50에서 적합) — 집단별·시점별 각각 실시.
-          p &gt; 0.05 → 정규성 가정 유지 → 모수 검정.
+          <strong>정규성 검정 (Normality)</strong>
+          <p><strong>Shapiro-Wilk 검정</strong> — 집단별·시점별 각각 실시 (n &lt; 50에서 적합).
+          p &gt; 0.05 → 정규성 가정 유지 → 독립 t-검정 진행.
           p ≤ 0.05 → 비모수 대안 적용 (§6-B).</p>
         </div>
       </div>
@@ -487,13 +628,12 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
       <div class="af-step">
         <div class="af-num">3</div>
         <div class="af-content">
-          <strong>[모수] 2×2 혼합 ANOVA — 주 분석</strong>
+          <strong>[주 분석] 독립 t-검정 — H0₁, H0₂</strong>
           <p>
-            요인 A (between): 개념도 조건 (집단 1 vs 2)<br>
-            요인 B (within): 시점 (pre vs post)<br>
-            <strong>핵심 검정: A×B 상호작용 효과</strong> → F(1, 28), α=0.05<br>
-            효과 크기: partial η² (소=0.01, 중=0.06, 대=0.14)<br>
-            구형성 가정: Mauchly 검정 → 위반 시 Greenhouse-Geisser 교정
+            T1 점수: A그룹 vs B그룹 — 독립 t-검정 (단측, α=0.025)<br>
+            T2 점수: A그룹 vs B그룹 — 독립 t-검정 (단측, α=0.025)<br>
+            등분산 가정: Levene 검정 → 위반 시 Welch's t-검정 적용<br>
+            효과 크기: Cohen's d (소=0.20, 중=0.50, 대=0.80)
           </p>
         </div>
       </div>
@@ -501,42 +641,42 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
       <div class="af-step">
         <div class="af-num">4</div>
         <div class="af-content">
-          <strong>[모수] 사후 단순 효과 분석 (Simple Effects)</strong>
-          <p>ANOVA 상호작용 유의 시:<br>
-          · 집단 1 내: pre vs post — <strong>대응 t-검정 (단측)</strong><br>
-          · 집단 2 내: pre vs post — <strong>대응 t-검정 (단측)</strong><br>
-          · 개선량(Δ) 비교: G1 vs G2 — <strong>독립 t-검정 (단측)</strong><br>
-          Bonferroni 교정: α = 0.05/3 ≈ 0.017</p>
+          <strong>[탐색] 망각량 비교 — H0₃</strong>
+          <p>
+            retention_drop(Δ = T1 − T2): A그룹 vs B그룹 — 독립 t-검정 (단측, α=0.05)<br>
+            또는 retention_ratio: Mann-Whitney U (정규성 위반 시)<br>
+            B그룹의 Δ가 A그룹보다 유의하게 작으면 → 개념도 조건이 파지에 유리
+          </p>
         </div>
       </div>
 
       <div class="af-step">
         <div class="af-num">5</div>
         <div class="af-content">
-          <strong>[모수] 개념도 복잡도 상관 분석 (집단 1)</strong>
-          <p>Pearson 상관계수 r(노드 수, Δ), r(엣지 수, Δ), r(수정 횟수, Δ)<br>
-          효과 크기: r (소=0.10, 중=0.30, 대=0.50)<br>
-          95% 신뢰구간 함께 보고</p>
+          <strong>[보조] 집단 내 반복 측정 — T1 vs T2 변화</strong>
+          <p>
+            각 집단 내: T1 → T2 점수 변화 — <strong>대응 t-검정</strong><br>
+            양 집단 모두 T2가 하락한다면(망각): 얼마나 하락하는지 비교<br>
+            이는 H0₃와 같은 방향의 분석이지만 집단 내 반복 측정으로 보강
+          </p>
         </div>
       </div>
 
       <div class="af-step">
         <div class="af-num">6</div>
         <div class="af-content">
-          <strong>[보조] 오류 유형별 탐지율 비교</strong>
-          <p>direction / causality / scope / limitation 각 유형별 정답률 산출.
-          집단 × 유형 상호작용: 반복측정 ANOVA (시점별 구분).
-          어떤 오류 유형이 개념도로 가장 개선되는지 탐색.</p>
+          <strong>[탐색] 개념도 복잡도 상관 — H0₄ (B그룹 한정)</strong>
+          <p>Pearson r(노드 수, T2_rate), r(엣지 수, T2_rate), r(수정 횟수, T2_rate)<br>
+          95% 신뢰구간 함께 보고. 정규성 위반 시 Spearman ρ.</p>
         </div>
       </div>
 
       <div class="af-step">
         <div class="af-num">7</div>
         <div class="af-content">
-          <strong>[보조] 확신도·응답시간 분석</strong>
-          <p>확신도: 집단×시점 혼합 ANOVA (score_rate와 동일 구조)<br>
-          응답시간: 로그 변환 후 동일 구조 분석 (응답시간은 정규분포 미준수 경향)<br>
-          과신 지수(overconfidence_index): 집단 간 독립 t-검정</p>
+          <strong>[보조] 설문·확신도 기술통계 및 집단 비교</strong>
+          <p>설문 리커트 점수: 집단별 평균·SD 기술통계, 독립 t-검정 또는 Mann-Whitney.
+          확신도-정확성 보정(calibration) — Overconfidence index = mean(confidence|오답) − mean(confidence|정답).</p>
         </div>
       </div>
 
@@ -550,19 +690,14 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
         </thead>
         <tbody>
           <tr>
-            <td>혼합 ANOVA</td>
-            <td>Aligned Rank Transform (ART) ANOVA</td>
-            <td>정규성 위반, 혼합 설계 유지 필요 시</td>
+            <td>독립 t-검정</td>
+            <td>Mann-Whitney U 검정</td>
+            <td>집단 간 T1/T2/Δ 비교</td>
           </tr>
           <tr>
             <td>대응 t-검정</td>
             <td>Wilcoxon 부호순위 검정</td>
-            <td>집단 내 pre-post 비교</td>
-          </tr>
-          <tr>
-            <td>독립 t-검정</td>
-            <td>Mann-Whitney U 검정</td>
-            <td>집단 간 Δ 비교</td>
+            <td>집단 내 T1 → T2 변화</td>
           </tr>
           <tr>
             <td>Pearson r</td>
@@ -575,15 +710,15 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
 
     <h3>§6-C 정규성 검정 의사결정 트리</h3>
     <div class="decision-tree">
-      <div class="dt-node">Shapiro-Wilk 검정 실시</div>
+      <div class="dt-node">Shapiro-Wilk 검정 실시 (집단별·시점별)</div>
       <div class="dt-branch">
         <div style="margin-bottom:8px;">
           <span class="dt-yes">p &gt; 0.05 (정규성 충족)</span><br>
-          <div class="dt-node" style="margin-top:4px;">혼합 ANOVA → 대응/독립 t-검정 → Pearson r</div>
+          <div class="dt-node" style="margin-top:4px;">독립 t-검정 (Levene 검정 후 등분산 여부에 따라 Student's/Welch's)</div>
         </div>
         <div>
           <span class="dt-no">p ≤ 0.05 (정규성 위반)</span><br>
-          <div class="dt-node" style="margin-top:4px;">ART ANOVA → Wilcoxon / Mann-Whitney → Spearman ρ</div>
+          <div class="dt-node" style="margin-top:4px;">Mann-Whitney U (집단 간) / Wilcoxon (집단 내) / Spearman ρ (상관)</div>
         </div>
       </div>
     </div>
@@ -600,16 +735,15 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
           <tr><th>검정</th><th>효과 크기 지표</th><th>소(Small)</th><th>중(Medium)</th><th>대(Large)</th></tr>
         </thead>
         <tbody>
-          <tr><td>ANOVA</td><td>partial η²</td><td>0.01</td><td>0.06</td><td>0.14</td></tr>
-          <tr><td>t-검정</td><td>Cohen's d</td><td>0.20</td><td>0.50</td><td>0.80</td></tr>
+          <tr><td>독립/대응 t-검정</td><td>Cohen's d</td><td>0.20</td><td>0.50</td><td>0.80</td></tr>
           <tr><td>상관분석</td><td>Pearson r / Spearman ρ</td><td>0.10</td><td>0.30</td><td>0.50</td></tr>
-          <tr><td>비모수</td><td>rank-biserial r</td><td>0.10</td><td>0.30</td><td>0.50</td></tr>
+          <tr><td>비모수 (Mann-Whitney)</td><td>rank-biserial r</td><td>0.10</td><td>0.30</td><td>0.50</td></tr>
         </tbody>
       </table>
     </div>
     <div class="callout callout-tip">
       p-value만 보고하지 않고 효과 크기와 95% 신뢰구간을 함께 보고한다.
-      표본이 작을 때 p &lt; 0.05라도 효과 크기가 작으면 실질적 의미가 없을 수 있다.
+      표본이 작을 때 p &lt; 0.05라도 효과 크기가 작으면(d &lt; 0.20) 실질적 의미가 없을 수 있다.
     </div>
   </section>
 
@@ -619,37 +753,41 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
   <section>
     <h2>8. 분석 결과 보고 양식 (예시)</h2>
 
-    <h3>혼합 ANOVA 보고 형식</h3>
+    <h3>독립 t-검정 보고 형식</h3>
     <div class="callout callout-purple">
-      "시점(pre/post)의 주 효과는 유의하였으며 [F(1, 28) = ?, p = ?, partial η² = ?],
-      집단(개념도 유/무)의 주 효과는 [유의/유의하지 않았으며] [F(1, 28) = ?, p = ?],
-      집단 × 시점의 상호작용 효과는 [유의/유의하지 않았다] [F(1, 28) = ?, p = ?, partial η² = ?].
-      단순 효과 분석 결과 집단 1에서 사전(M=?, SD=?) 대비 사후(M=?, SD=?) 점수가
-      유의하게 향상되었고 [t(14) = ?, p = ?, d = ?],
-      집단 2에서는 [유의/유의하지 않은] 변화를 보였다 [t(14) = ?, p = ?, d = ?]."
+      "즉시 퀴즈(T1) 점수에서 개념도 집단(B그룹, M=?, SD=?)이 AI 요약 집단(A그룹, M=?, SD=?)보다
+      [유의하게 높았다 / 유의한 차이가 없었다], t(?) = ?, p = ?, d = ?.<br><br>
+      지연 퀴즈(T2) 점수에서도 개념도 집단(M=?, SD=?)이 AI 요약 집단(M=?, SD=?)보다
+      [유의하게 높았다 / 유의한 차이가 없었다], t(?) = ?, p = ?, d = ?.<br><br>
+      망각량(T1−T2) 비교에서 두 집단 간 [유의한 차이가 있었다 / 없었다], t(?) = ?, p = ?, d = ?."
     </div>
 
     <h3>결과 판단 기준 요약</h3>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>가설</th><th>기각 조건</th><th>해석</th></tr>
+          <tr><th>가설</th><th>기각 조건</th><th>해석 방향</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td>H0₁ (필터링 효과)</td>
+            <td>H0₁ (즉시 이해도)</td>
+            <td>t-검정 p &lt; 0.025 (단측), d &gt; 0.20</td>
+            <td>개념도 조건이 즉각적 이해 촉진</td>
+          </tr>
+          <tr>
+            <td>H0₂ (장기 파지)</td>
+            <td>t-검정 p &lt; 0.025 (단측), d &gt; 0.20</td>
+            <td>개념도 조건이 장기 기억 유지에 유리</td>
+          </tr>
+          <tr>
+            <td>H0₃ (망각 속도)</td>
             <td>t-검정 p &lt; 0.05 (단측), d &gt; 0.20</td>
-            <td>AI 요약 검토 인터페이스가 오류 탐지력 향상에 기여</td>
+            <td>개념도 조건에서 망각이 더 느림</td>
           </tr>
           <tr>
-            <td>H0₂ (상호작용)</td>
-            <td>ANOVA 상호작용 p &lt; 0.05, partial η² &gt; 0.06</td>
-            <td>개념도 도구가 추가적 학습 효과를 만들어냄</td>
-          </tr>
-          <tr>
-            <td>H0₃ (복잡도 상관)</td>
-            <td>Pearson r p &lt; 0.05, |r| &gt; 0.30</td>
-            <td>정교한 개념도 작성이 오류 탐지력 향상과 관련</td>
+            <td>H0₄ (복잡도 상관)</td>
+            <td>Pearson r p &lt; 0.05, r &gt; 0.30</td>
+            <td>정교한 개념도 → 높은 파지 점수</td>
           </tr>
         </tbody>
       </table>
@@ -658,33 +796,72 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
 
   <hr>
 
-  <!-- ⑨ 구현 변경사항 -->
+  <!-- ⑨ 현재 시스템과 필요 변경사항 -->
   <section>
-    <h2>9. 현재 시스템에서 필요한 변경사항</h2>
+    <h2>9. 현재 구현 상태 및 필요 변경사항</h2>
 
-    <h3>논문 통일</h3>
-    <p>모든 참가자를 단일 <code>paperSet</code>으로 배정. 추천: <strong>vision</strong> (I-JEPA → MAE).</p>
-    <pre><code>// app/api/auth/participant/route.ts
-const PARTICIPANTS: Record&lt;string, Pick&lt;Session, "groupNum" | "paperSet"&gt;&gt; = {
-  "참가자01": { groupNum: 1, paperSet: "vision" },
-  "참가자02": { groupNum: 2, paperSet: "vision" },
-  "참가자03": { groupNum: 1, paperSet: "vision" },
-  // ... 총 30명 (집단당 15명)
-};</code></pre>
+    <h3>현재 구현 상태</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>상태</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>단일 논문 (LP)</td>
+            <td><span class="badge badge-green">완료</span></td>
+            <td>선형계획법의 해의 이동에 관한 시각화 (이상욱 외, 2002)</td>
+          </tr>
+          <tr>
+            <td>번호 기반 로그인 (01–30)</td>
+            <td><span class="badge badge-green">완료</span></td>
+            <td>홀수=B그룹(개념도), 짝수=A그룹(AI 요약)</td>
+          </tr>
+          <tr>
+            <td>개념도 캔버스 (B그룹)</td>
+            <td><span class="badge badge-green">완료</span></td>
+            <td>노드·엣지 구성, 자동 저장</td>
+          </tr>
+          <tr>
+            <td>AI 요약문 오류탐지 (현재 개입)</td>
+            <td><span class="badge badge-amber">설계 변경 검토</span></td>
+            <td>현재: 오류탐지 pre/filtering/post → 개정안: 이해도 퀴즈 T1/T2로 교체 필요</td>
+          </tr>
+          <tr>
+            <td>즉시 퀴즈 (T1)</td>
+            <td><span class="badge badge-red">미구현</span></td>
+            <td>읽기 직후 8문항 퀴즈 추가 필요</td>
+          </tr>
+          <tr>
+            <td>24시간 지연 퀴즈 (T2)</td>
+            <td><span class="badge badge-red">미구현</span></td>
+            <td>24h 잠금 로직 + 동일/동형 문항 구성 필요</td>
+          </tr>
+          <tr>
+            <td>설문</td>
+            <td><span class="badge badge-green">완료</span></td>
+            <td>Likert 5점 × 5문항 (집단별 맞춤)</td>
+          </tr>
+          <tr>
+            <td>CSV 내보내기</td>
+            <td><span class="badge badge-green">완료</span></td>
+            <td>관리자 패널 → filtering/survey/sessions/concept-map CSV</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <h3>참가자 ID 체계</h3>
-    <p>이름 대신 <strong>익명 번호 코드</strong>(P01–P30)를 사용하면 개인정보를 보호하면서도
-    집단 배정이 코드에서 바로 읽힌다. 홀수=집단1, 짝수=집단2.</p>
+    <h3>개정 설계 구현을 위한 우선순위</h3>
+    <ol>
+      <li><strong>(필수) 이해도 퀴즈 페이지 추가</strong> — LP 논문 기반 8문항 (재인 4 + 회상 3 + 적용 1), T1 세션용</li>
+      <li><strong>(필수) 24h 잠금 + T2 퀴즈 세션</strong> — DB에 T1 완료 시각 저장, T2 접근 시 24h 경과 확인</li>
+      <li><strong>(검토) 현재 filtering 구조 유지 여부</strong> — 오류탐지 과제를 완전히 제거하거나, T1 퀴즈 후 부가 과제로 유지할지 팀 결정 필요</li>
+      <li><strong>(선택) 퀴즈 루브릭 채점 UI</strong> — 회상·적용 문항은 연구자 수동 채점 필요, 관리자 패널에 채점 UI 추가</li>
+    </ol>
 
-    <h3>현재 시스템으로 바로 수집 가능한 데이터</h3>
-    <ul>
-      <li><span class="badge badge-green">완료</span> 문장별 정답 여부, 점수, 오류 유형 — <code>filtering_responses</code></li>
-      <li><span class="badge badge-green">완료</span> 판단 확신도 (1–5) — <code>confidence</code> 컬럼</li>
-      <li><span class="badge badge-green">완료</span> 응답 시간 (ms) — <code>response_time_ms</code> 컬럼</li>
-      <li><span class="badge badge-green">완료</span> 개념도 복잡도 지표 — <code>concept_maps</code> 테이블</li>
-      <li><span class="badge badge-green">완료</span> 설문 리커트 — <code>survey_responses</code> 테이블</li>
-      <li><span class="badge badge-amber">추가 필요</span> 분석용 CSV → 관리자 패널 export 기능 이미 구현됨</li>
-    </ul>
+    <div class="callout callout-warning">
+      <strong>현실적 운영 고려:</strong> 24h 지연 설계는 참가자가 D+1에 재접속해야 하므로 탈락률이 높다.
+      실험실 환경에서는 당일 2세션(세션1 직후 휴식 1시간 후 세션2)으로 단축하는 방안도 고려할 수 있으나,
+      장기 파지 효과를 보려면 반드시 24h 이상의 간격이 필요하다.
+    </div>
   </section>
 
 </div>
