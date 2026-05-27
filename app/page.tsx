@@ -61,7 +61,7 @@ export default function ParticipantLoginPage() {
           </button>
         </form>
         <p className="mt-6 text-center text-xs text-stone-400">
-          이미 진행 중이라면 같은 번호로 이어서 진행됩니다.
+          번호는 1인 1회만 사용 가능합니다.
         </p>
       </div>
     </main>
