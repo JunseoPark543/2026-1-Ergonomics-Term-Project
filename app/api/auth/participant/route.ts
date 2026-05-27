@@ -28,18 +28,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "참가자 번호는 01~30이어야 합니다." }, { status: 400 });
   }
 
-  const existing = await getSession(participantId);
-  if (existing) {
-    return NextResponse.json({ error: "이미 사용 중인 번호입니다. 다른 번호를 입력해주세요." }, { status: 409 });
+  let session = await getSession(participantId);
+  if (!session) {
+    session = sessionSchema.parse({
+      ...assignGroup(participantId),
+      participantId,
+      currentStep: "guide",
+      createdAt: new Date().toISOString()
+    });
+    await createSession(session);
   }
-
-  const session = sessionSchema.parse({
-    ...assignGroup(participantId),
-    participantId,
-    currentStep: "guide",
-    createdAt: new Date().toISOString()
-  });
-  await createSession(session);
 
   const token = generateToken();
   await createAuthSession(token, "participant", participantId, 7 * 24);
