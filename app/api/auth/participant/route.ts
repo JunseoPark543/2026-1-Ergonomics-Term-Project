@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { generateToken } from "@/lib/auth";
-import { getSession, createSession, createAuthSession } from "@/lib/db";
+import { getSession, createSession, createAuthSession, getAuthSession } from "@/lib/db";
 import { sessionSchema, type Session } from "@/lib/schemas";
 
 const COOKIE = {
@@ -19,7 +20,7 @@ function assignGroup(participantId: string): Pick<Session, "groupNum" | "paperSe
   };
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null) as { participantId?: string } | null;
   const raw = body?.participantId?.trim() ?? "";
   const participantId = raw.padStart(2, "0");
@@ -29,7 +30,15 @@ export async function POST(request: Request) {
   }
 
   let session = await getSession(participantId);
-  if (!session) {
+  if (session) {
+    // 기존 쿠키로 본인임을 확인한 경우에만 재로그인 허용
+    const existingToken = request.cookies.get("participant_token")?.value;
+    const authSession = existingToken ? await getAuthSession(existingToken) : null;
+    const isSelf = authSession?.role === "participant" && authSession?.identity === participantId;
+    if (!isSelf) {
+      return NextResponse.json({ error: "이미 사용 중인 번호입니다. 다른 번호를 입력해주세요." }, { status: 409 });
+    }
+  } else {
     session = sessionSchema.parse({
       ...assignGroup(participantId),
       participantId,
