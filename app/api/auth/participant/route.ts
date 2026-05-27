@@ -51,7 +51,14 @@ export async function POST(request: NextRequest) {
   const token = generateToken();
   await createAuthSession(token, "participant", participantId, 7 * 24);
 
-  const res = NextResponse.json({ redirectTo: `/experiment/${session.currentStep}` });
+  const VALID_STEPS: Session["currentStep"][] = [
+    "guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"
+  ];
+  const step = VALID_STEPS.includes(session.currentStep as Session["currentStep"])
+    ? session.currentStep
+    : "guide";
+
+  const res = NextResponse.json({ redirectTo: `/experiment/${step}` });
   res.cookies.set("participant_token", token, COOKIE);
   return res;
 }

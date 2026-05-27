@@ -46,7 +46,7 @@ function rowToSession(row: Record<string, unknown>): Session {
   return {
     participantId: row.participant_id as string,
     groupNum: row.group_num as 1 | 2,
-    paperSet: row.paper_set as "vision" | "timeseries",
+    paperSet: row.paper_set as Session["paperSet"],
     currentStep: row.current_step as Session["currentStep"],
     createdAt: row.created_at as string
   };
