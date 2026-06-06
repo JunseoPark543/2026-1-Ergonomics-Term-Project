@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // ── 참가자 세션 ──────────────────────────────────────────────
 export const sessionSchema = z.object({
-  participantId: z.string(),           // "01" ~ "30"
+  participantId: z.string(),           // "01" ~ "60"
   groupNum: z.union([z.literal(1), z.literal(2)]),  // 1=홀수(구조도↑), 2=짝수(요약문↑)
   paperSet: z.union([z.literal("vision"), z.literal("timeseries"), z.literal("optical"), z.literal("lp")]),
   currentStep: z.enum(["guide", "reading", "pre-test", "filtering", "post-test", "survey", "done"]),

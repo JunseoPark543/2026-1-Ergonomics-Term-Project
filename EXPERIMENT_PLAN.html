@@ -175,7 +175,7 @@
     <div class="doc-meta">
       작성일: 2026-05-26 &nbsp;·&nbsp;
       논문: 선형계획법의 해의 이동에 관한 시각화 (이상욱·임성묵·박순달, 경영과학 제19권 제1호, 2002) &nbsp;·&nbsp;
-      참가자: 30명
+      참가자: 60명
     </div>
   </div>
 
@@ -241,13 +241,13 @@
         <div class="dm-cell">2차 판단 (post)</div>
       </div>
       <div class="dm-row">
-        <div class="dm-cell"><strong>집단 1 (n=15)</strong><br><span style="font-size:12px;color:#78716c;">개념도 O · 홀수 번호</span></div>
+        <div class="dm-cell"><strong>집단 1 (n=30)</strong><br><span style="font-size:12px;color:#78716c;">개념도 O · 홀수 번호</span></div>
         <div class="dm-cell">피드백 없음<br>점수 측정 (11점 만점)</div>
         <div class="dm-cell">피드백 + 개념도<br>점수 측정 (8점 만점)</div>
         <div class="dm-cell">피드백 없음<br>점수 측정 (11점 만점)</div>
       </div>
       <div class="dm-row">
-        <div class="dm-cell"><strong>집단 2 (n=15)</strong><br><span style="font-size:12px;color:#78716c;">개념도 X · 짝수 번호</span></div>
+        <div class="dm-cell"><strong>집단 2 (n=30)</strong><br><span style="font-size:12px;color:#78716c;">개념도 X · 짝수 번호</span></div>
         <div class="dm-cell">피드백 없음<br>점수 측정 (11점 만점)</div>
         <div class="dm-cell">피드백만<br>점수 측정 (8점 만점)</div>
         <div class="dm-cell">피드백 없음<br>점수 측정 (11점 만점)</div>
@@ -285,7 +285,7 @@
       <div class="power-bar-track"><div class="power-bar-fill" style="width:52%"></div></div>
     </div>
     <div class="power-bar-wrap">
-      <div class="power-bar-label"><span>n=15/집단 (총 30) ← 채택</span><span>검정력 ≈ 0.80</span></div>
+      <div class="power-bar-label"><span>n=15/집단 (총 30) ← 최소 기준</span><span>검정력 ≈ 0.80</span></div>
       <div class="power-bar-track"><div class="power-bar-fill" style="width:80%"></div></div>
     </div>
     <div class="power-bar-wrap">
@@ -296,23 +296,23 @@
     <div class="sample-vis">
       <div class="sample-group">
         <div class="sg-label">집단 1 (개념도 O)</div>
-        <div class="sg-n">15</div>
-        <div class="sg-sub">명 (홀수 번호 01·03·…·29)</div>
+        <div class="sg-n">30</div>
+        <div class="sg-sub">명 (홀수 번호 01·03·…·59)</div>
       </div>
       <div class="sample-group">
         <div class="sg-label">집단 2 (개념도 X)</div>
-        <div class="sg-n">15</div>
-        <div class="sg-sub">명 (짝수 번호 02·04·…·30)</div>
+        <div class="sg-n">30</div>
+        <div class="sg-sub">명 (짝수 번호 02·04·…·60)</div>
       </div>
       <div class="sample-group" style="border-color:#4d7c0f;">
         <div class="sg-label">총 표본</div>
-        <div class="sg-n" style="color:#4d7c0f;">30</div>
-        <div class="sg-sub">명 (검정력 0.80 달성)</div>
+        <div class="sg-n" style="color:#4d7c0f;">60</div>
+        <div class="sg-sub">명 (집단당 30명)</div>
       </div>
     </div>
 
     <div class="callout callout-warning">
-      탈락·결측 대비 10% 여유를 두어 <strong>집단당 17명, 총 34명</strong> 모집을 권장한다.
+      기존 30명에서 증원하여 <strong>집단당 30명, 총 60명</strong>으로 운영한다.
       정규성 가정 위반 시 비모수 검정으로 전환한다(§6-B 참조).
     </div>
   </section>
@@ -543,7 +543,7 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
           <p>
             요인 A (between): 개념도 조건 (집단 1 vs 2)<br>
             요인 B (within): 시점 (pre vs post)<br>
-            <strong>핵심: A×B 상호작용 효과</strong> → F(1, 28), α=0.05<br>
+            <strong>핵심: A×B 상호작용 효과</strong> → F(1, 58), α=0.05<br>
             효과 크기: partial η² (소=0.01, 중=0.06, 대=0.14)<br>
             구형성 가정: Mauchly 검정 → 위반 시 Greenhouse-Geisser 교정
           </p>
@@ -567,7 +567,7 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
         <div class="af-num">5</div>
         <div class="af-content">
           <strong>[보조] 전체 pre→post 변화 — H0₁ 검정</strong>
-          <p>30명 전원 대상 대응 t-검정 (단측, α=0.05).
+          <p>60명 전원 대상 대응 t-검정 (단측, α=0.05).
           AI 요약 검토 개입 자체의 효과를 집단 구분 없이 확인.</p>
         </div>
       </div>
@@ -575,7 +575,7 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
       <div class="af-step">
         <div class="af-num">6</div>
         <div class="af-content">
-          <strong>[탐색] 개념도 복잡도 상관 — H0₃ (집단 1, n=15)</strong>
+          <strong>[탐색] 개념도 복잡도 상관 — H0₃ (집단 1, n=30)</strong>
           <p>Pearson r(노드 수, Δ), r(엣지 수, Δ), r(수정 횟수, Δ)<br>
           95% 신뢰구간 함께 보고. 정규성 위반 시 Spearman ρ.</p>
         </div>
@@ -656,13 +656,13 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
 
     <h3>혼합 ANOVA 보고 형식</h3>
     <div class="callout callout-purple">
-      "시점(pre/post)의 주 효과는 유의하였으며 [F(1, 28) = ?, p = ?, partial η² = ?],
-      집단(개념도 유/무)의 주 효과는 [F(1, 28) = ?, p = ?],
-      <strong>집단 × 시점의 상호작용 효과는 [유의하였다] [F(1, 28) = ?, p = ?, partial η² = ?].</strong>
+      "시점(pre/post)의 주 효과는 유의하였으며 [F(1, 58) = ?, p = ?, partial η² = ?],
+      집단(개념도 유/무)의 주 효과는 [F(1, 58) = ?, p = ?],
+      <strong>집단 × 시점의 상호작용 효과는 [유의하였다] [F(1, 58) = ?, p = ?, partial η² = ?].</strong>
       단순 효과 분석 결과 집단 1에서 사전(M=?, SD=?) 대비 사후(M=?, SD=?) 점수가
-      유의하게 향상되었고 [t(14) = ?, p = ?, d = ?],
-      집단 2에서는 [유의/유의하지 않은] 변화를 보였다 [t(14) = ?, p = ?, d = ?].
-      개선량(Δ)은 집단 1(M=?, SD=?)이 집단 2(M=?, SD=?)보다 유의하게 컸다 [t(28) = ?, p = ?, d = ?]."
+      유의하게 향상되었고 [t(29) = ?, p = ?, d = ?],
+      집단 2에서는 [유의/유의하지 않은] 변화를 보였다 [t(29) = ?, p = ?, d = ?].
+      개선량(Δ)은 집단 1(M=?, SD=?)이 집단 2(M=?, SD=?)보다 유의하게 컸다 [t(58) = ?, p = ?, d = ?]."
     </div>
 
     <h3>결과 판단 기준</h3>
@@ -708,7 +708,7 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
             <td>선형계획법의 해의 이동에 관한 시각화 (이상욱 외, 2002)</td>
           </tr>
           <tr>
-            <td>번호 로그인 (01–30)</td>
+            <td>번호 로그인 (01–60)</td>
             <td><span class="badge badge-green">완료</span></td>
             <td>홀수=집단1(개념도), 짝수=집단2</td>
           </tr>
@@ -755,7 +755,7 @@ overconfidence_index = mean(confidence | 오답) − mean(confidence | 정답)<b
       <strong>실험 준비 체크리스트</strong><br>
       ☐ <code>public/papers/lp.pdf</code> 파일 배치<br>
       ☐ Supabase DB에 sessions / filtering_responses / concept_maps 테이블 생성 확인<br>
-      ☐ OR1 수강자 30명 모집 (홀수 번호 배정 → 집단 1, 짝수 → 집단 2)<br>
+      ☐ OR1 수강자 60명 모집 (홀수 번호 배정 → 집단 1, 짝수 → 집단 2)<br>
       ☐ 실험 완료 후 관리자 패널 → CSV 내보내기 → SPSS/R로 분석
     </div>
   </section>

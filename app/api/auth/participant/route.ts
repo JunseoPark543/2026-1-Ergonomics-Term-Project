@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
   const raw = body?.participantId?.trim() ?? "";
   const participantId = raw.padStart(2, "0");
 
-  if (!/^(0[1-9]|[12][0-9]|30)$/.test(participantId)) {
-    return NextResponse.json({ error: "참가자 번호는 01~30이어야 합니다." }, { status: 400 });
+  if (!/^(0[1-9]|[1-5][0-9]|60)$/.test(participantId)) {
+    return NextResponse.json({ error: "참가자 번호는 01~60이어야 합니다." }, { status: 400 });
   }
 
   let session = await getSession(participantId);

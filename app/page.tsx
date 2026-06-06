@@ -37,7 +37,7 @@ export default function ParticipantLoginPage() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-ink" htmlFor="pid">
-              참가자 번호 (01~30)
+              참가자 번호 (01~60)
             </label>
             <input
               id="pid"
